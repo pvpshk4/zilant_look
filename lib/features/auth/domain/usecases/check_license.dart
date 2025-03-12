@@ -1,0 +1,3 @@
+class CheckLicenseUseCase {
+  const CheckLicenseUseCase();
+}
