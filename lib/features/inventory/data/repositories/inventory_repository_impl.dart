@@ -6,7 +6,7 @@ import 'package:zilant_look/features/inventory/domain/repositories/inventory_rep
 class InventoryRepositoryImpl implements InventoryRepository {
   final InventoryRemoteDataSource remoteDataSource;
 
-  InventoryRepositoryImpl({required this.remoteDataSource});
+  InventoryRepositoryImpl(this.remoteDataSource);
 
   @override
   Future<List<ClothingItemEntity>> getInventoryItems() async {

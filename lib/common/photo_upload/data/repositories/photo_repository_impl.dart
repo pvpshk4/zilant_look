@@ -6,7 +6,7 @@ import '../data_sources/remote/photo_remote_data_source.dart';
 class PhotoRepositoryImpl implements PhotoRepository {
   final PhotoRemoteDataSource remoteDataSource;
 
-  PhotoRepositoryImpl({required this.remoteDataSource});
+  PhotoRepositoryImpl(this.remoteDataSource);
 
   @override
   Future<PhotoEntity> uploadPhoto(String filePath) async {

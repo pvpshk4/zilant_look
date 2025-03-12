@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:zilant_look/features/home/data/repositories/home_repository_impl.dart';
@@ -21,7 +22,9 @@ import 'common/photo_upload/presentation/bloc/photo_upload_bloc.dart';
 
 final sl = GetIt.instance;
 
-Future<void> initializeDependencies() async {
+Future<void> initializeDependencies(
+  GlobalKey<NavigatorState> rootNavigatorKey,
+) async {
   sl.registerSingleton(() => http.Client());
 
   //============================================================================
@@ -34,12 +37,8 @@ Future<void> initializeDependencies() async {
   //============================================================================
   //Repositories
   //============================================================================
-  sl.registerSingleton<PhotoRepository>(
-    PhotoRepositoryImpl(remoteDataSource: sl()),
-  );
-  sl.registerSingleton<InventoryRepository>(
-    InventoryRepositoryImpl(remoteDataSource: sl()),
-  );
+  sl.registerSingleton<PhotoRepository>(PhotoRepositoryImpl(sl()));
+  sl.registerSingleton<InventoryRepository>(InventoryRepositoryImpl(sl()));
   sl.registerSingleton<HomeRepository>(HomeRepositoryImpl());
 
   //============================================================================
