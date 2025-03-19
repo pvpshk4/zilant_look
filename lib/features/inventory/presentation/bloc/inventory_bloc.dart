@@ -18,67 +18,100 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     required this.addClothingItem,
     required this.deleteClothingItem,
     required this.updateClothingItem,
-  }) : super(InventoryInitialState());
+  }) : super(InventoryInitialState()) {
+    on<LoadInventoryEvent>(_onLoadInventory);
+    on<FilterInventoryByCategoryEvent>(_onFilterInventory);
+    on<AddClothingItemEvent>(_onAddClothingItem);
+    on<DeleteClothingItemEvent>(_onDeleteClothingItem);
+    on<UpdateClothingItemEvent>(_onUpdateClothingItem);
+    on<AddPhotoToInventoryEvent>(_onAddPhotoToInventory);
+  }
 
-  Stream<InventoryState> mapEventToState(InventoryEvent event) async* {
-    if (event is LoadInventoryEvent) {
-      yield InventoryLoadingState();
-      try {
-        final items = await getInventoryItems();
-        yield InventoryLoadedState(items);
-      } catch (e) {
-        yield InventoryErrorState('Failed to load inventory: $e');
-      }
-    } else if (event is FilterInventoryByCategoryEvent) {
-      yield InventoryLoadingState();
-      try {
-        final items = await filterInventoryByCategory(event.category);
-        yield InventoryFilteredState(items);
-      } catch (e) {
-        yield InventoryErrorState('Failed to filter inventory: $e');
-      }
-    } else if (event is AddClothingItemEvent) {
-      yield InventoryLoadingState();
-      try {
-        await addClothingItem(event.item);
-        final items = await getInventoryItems();
-        yield InventoryLoadedState(items);
-      } catch (e) {
-        yield InventoryErrorState('Failed to add item: $e');
-      }
-    } else if (event is DeleteClothingItemEvent) {
-      yield InventoryLoadingState();
-      try {
-        await deleteClothingItem(event.id);
-        final items = await getInventoryItems();
-        yield InventoryLoadedState(items);
-      } catch (e) {
-        yield InventoryErrorState('Failed to delete item: $e');
-      }
-    } else if (event is UpdateClothingItemEvent) {
-      yield InventoryLoadingState();
-      try {
-        await updateClothingItem(event.item);
-        final items = await getInventoryItems();
-        yield InventoryLoadedState(items);
-      } catch (e) {
-        yield InventoryErrorState('Failed to update item: $e');
-      }
-    } else if (event is AddPhotoToInventoryEvent) {
-      yield InventoryLoadingState();
-      try {
-        final clothingItem = ClothingItemEntity(
-          id: 'generated_id',
-          name: 'Photo',
-          imageUrl: event.filePath,
-          category: 'Photos',
-        );
-        await addClothingItem(clothingItem);
-        final items = await getInventoryItems();
-        yield InventoryLoadedState(items);
-      } catch (e) {
-        yield InventoryErrorState('Failed to add photo to inventory" $e');
-      }
+  Future<void> _onLoadInventory(
+    LoadInventoryEvent event,
+    Emitter<InventoryState> emit,
+  ) async {
+    emit(InventoryLoadingState());
+    try {
+      final items = await getInventoryItems();
+      emit(InventoryLoadedState(items));
+    } catch (e) {
+      emit(InventoryErrorState('Failed to load inventory: $e'));
+    }
+  }
+
+  Future<void> _onFilterInventory(
+    FilterInventoryByCategoryEvent event,
+    Emitter<InventoryState> emit,
+  ) async {
+    emit(InventoryLoadingState());
+    try {
+      final items = await filterInventoryByCategory(event.category);
+      emit(InventoryFilteredState(items));
+    } catch (e) {
+      emit(InventoryErrorState('Failed to filter inventory: $e'));
+    }
+  }
+
+  Future<void> _onAddClothingItem(
+    AddClothingItemEvent event,
+    Emitter<InventoryState> emit,
+  ) async {
+    emit(InventoryLoadingState());
+    try {
+      await addClothingItem(event.item);
+      final items = await getInventoryItems();
+      emit(InventoryLoadedState(items));
+    } catch (e) {
+      emit(InventoryErrorState('Failed to add item: $e'));
+    }
+  }
+
+  Future<void> _onDeleteClothingItem(
+    DeleteClothingItemEvent event,
+    Emitter<InventoryState> emit,
+  ) async {
+    emit(InventoryLoadingState());
+    try {
+      await deleteClothingItem(event.id);
+      final items = await getInventoryItems();
+      emit(InventoryLoadedState(items));
+    } catch (e) {
+      emit(InventoryErrorState('Failed to delete item: $e'));
+    }
+  }
+
+  Future<void> _onUpdateClothingItem(
+    UpdateClothingItemEvent event,
+    Emitter<InventoryState> emit,
+  ) async {
+    emit(InventoryLoadingState());
+    try {
+      await updateClothingItem(event.item);
+      final items = await getInventoryItems();
+      emit(InventoryLoadedState(items));
+    } catch (e) {
+      emit(InventoryErrorState('Failed to update item: $e'));
+    }
+  }
+
+  Future<void> _onAddPhotoToInventory(
+    AddPhotoToInventoryEvent event,
+    Emitter<InventoryState> emit,
+  ) async {
+    emit(InventoryLoadingState());
+    try {
+      final clothingItem = ClothingItemEntity(
+        id: 'generated_id', // Замените на реальный ID
+        name: 'Photo',
+        imageUrl: event.filePath,
+        category: 'Photos',
+      );
+      await addClothingItem(clothingItem);
+      final items = await getInventoryItems();
+      emit(InventoryLoadedState(items));
+    } catch (e) {
+      emit(InventoryErrorState('Failed to add photo to inventory: $e'));
     }
   }
 }
