@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:zilant_look/common/domain/entities/category_entity.dart';
 
 class CategoryModel extends CategoryEntity {
-  const CategoryModel({required super.id, required super.name});
+  const CategoryModel({required super.id, required super.category});
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{'id': id, 'category': name};
+    return <String, dynamic>{'id': id, 'category': category};
   }
 
   factory CategoryModel.fromMap(Map<String, dynamic> map) {
     return CategoryModel(
       id: map['id'] as String,
-      name: map['category'] as String,
+      category: map['category'] as String,
     );
   }
 

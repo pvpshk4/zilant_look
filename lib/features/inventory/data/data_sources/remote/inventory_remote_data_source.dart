@@ -13,7 +13,7 @@ abstract class InventoryRemoteDataSource {
 class InventoryRemoteDataSourceImpl implements InventoryRemoteDataSource {
   final http.Client client;
 
-  InventoryRemoteDataSourceImpl({required this.client});
+  InventoryRemoteDataSourceImpl(this.client);
 
   @override
   Future<List<ClothingItemModel>> getInventoryItems() async {

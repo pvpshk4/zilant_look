@@ -6,7 +6,7 @@ import 'home_event.dart';
 import 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final GetHomeContent getHomeContent;
+  final GetHomeContentUseCase getHomeContent;
 
   HomeBloc({required this.getHomeContent}) : super(HomeInitialState()) {
     on<LoadHomeContentEvent>((event, emit) async {

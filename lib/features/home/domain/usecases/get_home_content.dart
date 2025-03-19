@@ -1,12 +1,12 @@
+import 'package:zilant_look/features/home/data/repositories/home_repository_impl.dart';
 import 'package:zilant_look/features/home/domain/entities/home_content_entity.dart';
-import 'package:zilant_look/features/home/domain/repositories/home_repository.dart';
 
-class GetHomeContent {
-  final HomeRepository repository;
+class GetHomeContentUseCase {
+  final HomeRepositoryImpl _homeRepositoryImpl;
 
-  GetHomeContent({required this.repository});
+  GetHomeContentUseCase(this._homeRepositoryImpl);
 
   Future<HomeContentEntity> call() async {
-    return await repository.getHomeContent();
+    return await _homeRepositoryImpl.getHomeContent();
   }
 }

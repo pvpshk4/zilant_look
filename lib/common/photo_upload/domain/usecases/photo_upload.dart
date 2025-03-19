@@ -1,12 +1,14 @@
+import 'dart:io';
 import 'package:zilant_look/common/photo_upload/domain/entities/photo_entity.dart';
-import 'package:zilant_look/common/photo_upload/domain/repositories/photo_repository.dart';
+
+import '../../data/repositories/photo_repository_impl.dart';
 
 class UploadPhotoUseCase {
-  final PhotoRepository repository;
+  final PhotoRepositoryImpl _uploadPhotoRepositoryImpl;
 
-  UploadPhotoUseCase({required this.repository});
+  UploadPhotoUseCase(this._uploadPhotoRepositoryImpl);
 
-  Future<PhotoEntity> call(String filePath) async {
-    return await repository.uploadPhoto(filePath);
+  Future<PhotoEntity> call(File file) async {
+    return await _uploadPhotoRepositoryImpl.uploadPhoto(file);
   }
 }

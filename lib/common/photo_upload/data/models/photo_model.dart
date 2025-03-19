@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:zilant_look/common/photo_upload/domain/entities/photo_entity.dart';
 
 class PhotoModel extends PhotoEntity {
@@ -27,8 +26,9 @@ class PhotoModel extends PhotoEntity {
 
   String toJson() => json.encode(toMap());
 
-  factory PhotoModel.fromJson(String source) =>
-      PhotoModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory PhotoModel.fromJson(Map<String, dynamic> json) {
+    return PhotoModel.fromMap(json);
+  }
 
   @override
   bool get stringify => true;

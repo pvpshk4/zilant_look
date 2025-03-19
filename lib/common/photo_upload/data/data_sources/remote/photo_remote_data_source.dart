@@ -1,30 +1,34 @@
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import '../../models/photo_model.dart';
+import 'dart:io';
+import 'package:zilant_look/common/photo_upload/data/data_sources/remote/photo_api_service.dart';
+import 'package:zilant_look/common/photo_upload/data/models/photo_model.dart';
+import 'package:dio/dio.dart';
 
 abstract class PhotoRemoteDataSource {
-  Future<PhotoModel> uploadPhoto(String filePath);
+  Future<PhotoModel> uploadPhoto(File file);
+  Future<PhotoModel> getPhoto(String photoId);
 }
 
 class PhotoRemoteDataSourceImpl implements PhotoRemoteDataSource {
-  final http.Client client;
+  final PhotoApiService _apiService;
 
-  PhotoRemoteDataSourceImpl({required this.client});
+  PhotoRemoteDataSourceImpl({required Dio dio})
+    : _apiService = PhotoApiService(dio);
 
   @override
-  Future<PhotoModel> uploadPhoto(String filePath) async {
-    final response = await client.post(
-      Uri.parse('https://api.example.com/upload'),
-      body: json.encode({'filePath': filePath}),
-      headers: {'Content-Type': 'application/json'},
-    );
+  Future<PhotoModel> uploadPhoto(File file) async {
+    try {
+      return await _apiService.uploadPhoto(file);
+    } catch (e) {
+      throw Exception('Failed to upload photo: $e');
+    }
+  }
 
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      return PhotoModel.fromMap(jsonData);
-    } else {
-      throw Exception("Failed to upload photo");
+  @override
+  Future<PhotoModel> getPhoto(String photoId) async {
+    try {
+      return await _apiService.getPhoto(photoId);
+    } catch (e) {
+      throw Exception('Failed to load photo: $e');
     }
   }
 }

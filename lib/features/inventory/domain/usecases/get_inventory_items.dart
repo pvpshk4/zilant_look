@@ -1,12 +1,12 @@
 import 'package:zilant_look/common/domain/entities/clothing_item_entity.dart';
-import 'package:zilant_look/features/inventory/domain/repositories/inventory_repository.dart';
+import 'package:zilant_look/features/inventory/data/repositories/inventory_repository_impl.dart';
 
 class GetInventoryItemsUseCase {
-  final InventoryRepository repository;
+  final InventoryRepositoryImpl _inventoryRepositoryImpl;
 
-  GetInventoryItemsUseCase({required this.repository});
+  GetInventoryItemsUseCase(this._inventoryRepositoryImpl);
 
   Future<List<ClothingItemEntity>> call() async {
-    return await repository.getInventoryItems();
+    return await _inventoryRepositoryImpl.getInventoryItems();
   }
 }

@@ -4,7 +4,7 @@ import 'package:zilant_look/features/inventory/data/data_sources/remote/inventor
 import 'package:zilant_look/features/inventory/domain/repositories/inventory_repository.dart';
 
 class InventoryRepositoryImpl implements InventoryRepository {
-  final InventoryRemoteDataSource remoteDataSource;
+  final InventoryRemoteDataSourceImpl remoteDataSource;
 
   InventoryRepositoryImpl(this.remoteDataSource);
 

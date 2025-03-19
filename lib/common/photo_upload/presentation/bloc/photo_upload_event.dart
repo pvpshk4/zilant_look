@@ -7,11 +7,13 @@ abstract class PhotoUploadEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class UploadPhotoEvent extends PhotoUploadEvent {
+class ChoosePhotoFromGalleryEvent extends PhotoUploadEvent {
   final String filePath;
 
-  const UploadPhotoEvent({required this.filePath});
+  const ChoosePhotoFromGalleryEvent({required this.filePath});
 
   @override
   List<Object> get props => [filePath];
 }
+
+class TakePhotoFromCameraEvent extends PhotoUploadEvent {}
