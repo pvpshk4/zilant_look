@@ -6,14 +6,14 @@ import 'package:zilant_look/common/photo_upload/data/models/photo_model.dart';
 
 part 'photo_api_service.g.dart';
 
-@RestApi(baseUrl: "http://127.0.0.1:8000")
+@RestApi(baseUrl: "http://127.0.0.1:5000")
 abstract class PhotoApiService {
   factory PhotoApiService(Dio dio, {String? baseUrl}) = _PhotoApiService;
 
-  @POST('/upload')
+  @POST('/human')
   @MultiPart()
   Future<PhotoModel> uploadPhoto(@Part() File file);
 
-  @GET('/photos/{id}')
+  @GET('/processed/<filename>')
   Future<PhotoModel> getPhoto(@Path('id') String photoId);
 }

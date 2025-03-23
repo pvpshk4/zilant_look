@@ -10,7 +10,7 @@ part of 'photo_api_service.dart';
 
 class _PhotoApiService implements PhotoApiService {
   _PhotoApiService(this._dio, {this.baseUrl, this.errorLogger}) {
-    baseUrl ??= 'http://127.0.0.1:8000';
+    baseUrl ??= 'http://127.0.0.1:5000';
   }
 
   final Dio _dio;

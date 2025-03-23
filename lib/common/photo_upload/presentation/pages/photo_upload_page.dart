@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zilant_look/common/photo_upload/presentation/bloc/photo_upload_bloc.dart';
 import 'package:zilant_look/common/photo_upload/presentation/bloc/photo_upload_event.dart';
 import 'package:zilant_look/common/photo_upload/presentation/bloc/photo_upload_state.dart';
@@ -15,7 +16,15 @@ class PhotoUploadPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<PhotoUploadBloc>(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Upload Photo')),
+        appBar: AppBar(
+          title: const Text('Upload Photo'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              GoRouter.of(context).go('/');
+            },
+          ),
+        ),
         body: BlocConsumer<PhotoUploadBloc, PhotoUploadState>(
           listener: (context, state) {
             if (state is PhotoUploadFailureState) {
