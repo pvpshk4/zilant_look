@@ -18,9 +18,9 @@ class PhotoModel extends PhotoEntity {
 
   factory PhotoModel.fromMap(Map<String, dynamic> map) {
     return PhotoModel(
-      id: map['id'] as String,
-      filePath: map['filePath'] as String,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+      id: map['image_base64']?.hashCode.toString() ?? '0', // Временное решение
+      filePath: map['image_base64'] ?? '',
+      createdAt: DateTime.now(),
     );
   }
 

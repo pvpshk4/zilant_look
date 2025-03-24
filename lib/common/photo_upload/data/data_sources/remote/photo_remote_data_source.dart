@@ -18,15 +18,14 @@ class PhotoRemoteDataSourceImpl implements PhotoRemoteDataSource {
   @override
   Future<PhotoModel> uploadPhoto(File file, String username) async {
     try {
-      // Преобразуем файл в base64
       final bytes = await file.readAsBytes();
       final base64Image = base64Encode(bytes);
 
-      // Отправляем данные на сервер
-      return await _apiService.uploadPhoto(
-        username: username,
-        photoBase64: base64Image,
-      );
+      // Формируем корректный JSON
+      final requestData = {"user_name": username, "photo": base64Image};
+
+      // Отправляем как JSON
+      return await _apiService.uploadPhoto(requestData);
     } catch (e) {
       throw Exception('Failed to upload photo: $e');
     }

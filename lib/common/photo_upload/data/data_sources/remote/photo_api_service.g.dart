@@ -24,27 +24,16 @@ class _PhotoApiService implements PhotoApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<PhotoModel> uploadPhoto({
-    required String username,
-    required String photoBase64,
-  }) async {
+  Future<PhotoModel> uploadPhoto(Map<String, dynamic> photoData) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = FormData();
-    _data.fields.add(MapEntry(
-      'username',
-      username,
-    ));
-    _data.fields.add(MapEntry(
-      'photoBase64',
-      photoBase64,
-    ));
+    final _data = <String, dynamic>{};
+    _data.addAll(photoData);
     final _options = _setStreamType<PhotoModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
-      contentType: 'multipart/form-data',
     )
         .compose(
           _dio.options,

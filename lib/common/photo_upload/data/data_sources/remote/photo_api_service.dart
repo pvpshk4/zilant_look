@@ -9,11 +9,7 @@ abstract class PhotoApiService {
   factory PhotoApiService(Dio dio, {String? baseUrl}) = _PhotoApiService;
 
   @POST('/human')
-  @MultiPart()
-  Future<PhotoModel> uploadPhoto({
-    @Part() required String username,
-    @Part() required String photoBase64,
-  });
+  Future<PhotoModel> uploadPhoto(@Body() Map<String, dynamic> photoData);
 
   @GET('/processed/{filename}')
   Future<PhotoModel> getPhoto(@Path('filename') String filename);
