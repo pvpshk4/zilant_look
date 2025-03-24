@@ -7,7 +7,15 @@ class UploadPhotoUseCase {
 
   UploadPhotoUseCase(this._uploadPhotoRepositoryImpl);
 
-  Future<PhotoEntity> call(File file, String username) async {
-    return await _uploadPhotoRepositoryImpl.uploadPhoto(file, username);
+  Future<PhotoEntity> call(
+    File file,
+    String username,
+    String subcategory,
+  ) async {
+    return await _uploadPhotoRepositoryImpl.uploadPhoto(
+      file,
+      username,
+      subcategory,
+    );
   }
 }

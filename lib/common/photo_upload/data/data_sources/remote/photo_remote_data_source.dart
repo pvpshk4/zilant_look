@@ -5,7 +5,11 @@ import 'package:dio/dio.dart';
 import 'dart:convert'; // Для работы с base64
 
 abstract class PhotoRemoteDataSource {
-  Future<PhotoModel> uploadPhoto(File file, String username);
+  Future<PhotoModel> uploadPhoto(
+    File file,
+    String username,
+    String subcategory,
+  );
   Future<PhotoModel> getPhoto(String photoId);
 }
 
@@ -16,13 +20,21 @@ class PhotoRemoteDataSourceImpl implements PhotoRemoteDataSource {
     : _apiService = PhotoApiService(dio);
 
   @override
-  Future<PhotoModel> uploadPhoto(File file, String username) async {
+  Future<PhotoModel> uploadPhoto(
+    File file,
+    String username,
+    String subcategory,
+  ) async {
     try {
       final bytes = await file.readAsBytes();
       final base64Image = base64Encode(bytes);
 
       // Формируем корректный JSON
-      final requestData = {"user_name": username, "photo": base64Image};
+      final requestData = {
+        "user_name": username,
+        "photo": base64Image,
+        "subcategory": subcategory,
+      };
 
       // Отправляем как JSON
       return await _apiService.uploadPhoto(requestData);

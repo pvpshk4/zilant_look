@@ -14,7 +14,7 @@ class _PhotoApiService implements PhotoApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://127.0.0.1:5000/background';
+    baseUrl ??= 'http://127.0.0.1:5000';
   }
 
   final Dio _dio;
@@ -37,7 +37,7 @@ class _PhotoApiService implements PhotoApiService {
     )
         .compose(
           _dio.options,
-          '/human',
+          '/clothes',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -70,7 +70,7 @@ class _PhotoApiService implements PhotoApiService {
     )
         .compose(
           _dio.options,
-          '/processed/${filename}',
+          '/clothes/processed/${filename}',
           queryParameters: queryParameters,
           data: _data,
         )

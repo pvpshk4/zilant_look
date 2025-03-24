@@ -26,6 +26,7 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
         final photoEntity = await uploadPhoto(
           File(image.path),
           "test_user",
+          "test_subcategory",
         ); // Тестовый username
         emit(PhotoUploadSuccessState(photo: photoEntity));
       } else {
@@ -47,6 +48,7 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
         final photoEntity = await uploadPhoto(
           File(image.path),
           "test_user",
+          "test_subcategory",
         ); // Тестовый username
         emit(PhotoUploadSuccessState(photo: photoEntity));
       } else {

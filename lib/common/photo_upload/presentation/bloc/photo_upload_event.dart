@@ -2,25 +2,30 @@ import 'package:equatable/equatable.dart';
 
 abstract class PhotoUploadEvent extends Equatable {
   const PhotoUploadEvent();
-
-  @override
-  List<Object> get props => [];
 }
 
 class ChoosePhotoFromGalleryEvent extends PhotoUploadEvent {
   final String username;
+  final String subcategory;
 
-  const ChoosePhotoFromGalleryEvent({required this.username});
+  const ChoosePhotoFromGalleryEvent({
+    required this.username,
+    required this.subcategory,
+  });
 
   @override
-  List<Object> get props => [username];
+  List<Object> get props => [username, subcategory];
 }
 
 class TakePhotoFromCameraEvent extends PhotoUploadEvent {
   final String username;
+  final String subcategory;
 
-  const TakePhotoFromCameraEvent({required this.username});
+  const TakePhotoFromCameraEvent({
+    required this.username,
+    required this.subcategory,
+  });
 
   @override
-  List<Object> get props => [username];
+  List<Object> get props => [username, subcategory];
 }

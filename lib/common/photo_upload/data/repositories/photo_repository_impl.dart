@@ -9,8 +9,16 @@ class PhotoRepositoryImpl implements PhotoRepository {
   PhotoRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<PhotoEntity> uploadPhoto(File file, String username) async {
-    final photo = await remoteDataSource.uploadPhoto(file, username);
+  Future<PhotoEntity> uploadPhoto(
+    File file,
+    String username,
+    String subcategory,
+  ) async {
+    final photo = await remoteDataSource.uploadPhoto(
+      file,
+      username,
+      subcategory,
+    );
     return photo;
   }
 }

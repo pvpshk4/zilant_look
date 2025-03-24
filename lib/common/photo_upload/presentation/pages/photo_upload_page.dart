@@ -46,7 +46,10 @@ class PhotoUploadPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         context.read<PhotoUploadBloc>().add(
-                          TakePhotoFromCameraEvent(username: 'your_username'),
+                          TakePhotoFromCameraEvent(
+                            username: 'your_username',
+                            subcategory: 'upper_body',
+                          ),
                         );
                       },
                       child: const Text('Take Another Photo'),
@@ -62,7 +65,10 @@ class PhotoUploadPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       context.read<PhotoUploadBloc>().add(
-                        TakePhotoFromCameraEvent(username: 'your_username'),
+                        TakePhotoFromCameraEvent(
+                          username: 'your_username',
+                          subcategory: 'upper_body',
+                        ),
                       );
                     },
                     child: const Text('Take Photo from Camera'),
@@ -71,7 +77,10 @@ class PhotoUploadPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       context.read<PhotoUploadBloc>().add(
-                        ChoosePhotoFromGalleryEvent(username: 'your_username'),
+                        ChoosePhotoFromGalleryEvent(
+                          username: 'your_username',
+                          subcategory: 'upper_body',
+                        ),
                       );
                     },
                     child: const Text('Choose Photo from Gallery'),
