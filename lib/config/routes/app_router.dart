@@ -4,8 +4,8 @@ import 'package:zilant_look/common/presentation/layouts/main_layout.dart';
 import 'package:zilant_look/common/photo_upload/presentation/pages/photo_upload_page.dart';
 import 'package:zilant_look/features/home/presentation/pages/home_page.dart';
 import 'package:zilant_look/features/catalog/presentation/pages/catalog_page.dart';
-import 'package:zilant_look/features/inventory/presentation/pages/inventory_page.dart';
-import 'package:zilant_look/features/inventory/presentation/bloc/inventory_bloc.dart';
+import 'package:zilant_look/features/wardrobe/presentation/pages/wardrobe_page.dart';
+import 'package:zilant_look/features/wardrobe/presentation/bloc/wardrobe_bloc.dart';
 import 'package:zilant_look/injection_container.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -23,13 +23,13 @@ final GoRouter appRouter = GoRouter(
               const MainLayout(currentIndex: 1, child: CatalogPage()),
     ),
     GoRoute(
-      path: '/inventory',
+      path: '/wardrobe',
       builder:
           (context, state) => MainLayout(
             currentIndex: 2,
             child: BlocProvider(
-              create: (context) => sl<InventoryBloc>(),
-              child: const InventoryPage(),
+              create: (context) => sl<WardrobeBloc>(),
+              child: const WardrobePage(),
             ),
           ),
     ),

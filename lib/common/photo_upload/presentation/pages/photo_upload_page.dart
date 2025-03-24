@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -47,7 +46,7 @@ class PhotoUploadPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         context.read<PhotoUploadBloc>().add(
-                          TakePhotoFromCameraEvent(),
+                          TakePhotoFromCameraEvent(username: 'your_username'),
                         );
                       },
                       child: const Text('Take Another Photo'),
@@ -63,7 +62,7 @@ class PhotoUploadPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       context.read<PhotoUploadBloc>().add(
-                        TakePhotoFromCameraEvent(),
+                        TakePhotoFromCameraEvent(username: 'your_username'),
                       );
                     },
                     child: const Text('Take Photo from Camera'),
@@ -72,7 +71,7 @@ class PhotoUploadPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       context.read<PhotoUploadBloc>().add(
-                        ChoosePhotoFromGalleryEvent(filePath: ''),
+                        ChoosePhotoFromGalleryEvent(username: 'your_username'),
                       );
                     },
                     child: const Text('Choose Photo from Gallery'),

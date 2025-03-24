@@ -38,7 +38,7 @@ class _MainLayoutState extends State<MainLayout> {
         context.go('/catalog');
         break;
       case 2:
-        context.go('/inventory');
+        context.go('/wardrobe');
         break;
       case 3:
         context.go('/profile');

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:zilant_look/common/domain/entities/clothing_item_entity.dart';
 
-class InventoryItemWidget extends StatelessWidget {
+class WardrobeItemWidget extends StatelessWidget {
   final ClothingItemEntity item;
   final VoidCallback onDelete;
 
-  const InventoryItemWidget({
+  const WardrobeItemWidget({
     super.key,
     required this.item,
     required this.onDelete,

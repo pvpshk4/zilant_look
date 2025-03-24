@@ -2,25 +2,25 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../common/domain/entities/clothing_item_entity.dart';
 
-abstract class InventoryEvent extends Equatable {
-  const InventoryEvent();
+abstract class WardrobeEvent extends Equatable {
+  const WardrobeEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LoadInventoryEvent extends InventoryEvent {}
+class LoadWardrobeEvent extends WardrobeEvent {}
 
-class FilterInventoryByCategoryEvent extends InventoryEvent {
+class FilterWardrobeByCategoryEvent extends WardrobeEvent {
   final String category;
 
-  const FilterInventoryByCategoryEvent(this.category);
+  const FilterWardrobeByCategoryEvent(this.category);
 
   @override
   List<Object> get props => [category];
 }
 
-class AddClothingItemEvent extends InventoryEvent {
+class AddClothingItemEvent extends WardrobeEvent {
   final ClothingItemEntity item;
 
   const AddClothingItemEvent(this.item);
@@ -29,7 +29,7 @@ class AddClothingItemEvent extends InventoryEvent {
   List<Object> get props => [item];
 }
 
-class DeleteClothingItemEvent extends InventoryEvent {
+class DeleteClothingItemEvent extends WardrobeEvent {
   final String id;
 
   const DeleteClothingItemEvent(this.id);
@@ -38,7 +38,7 @@ class DeleteClothingItemEvent extends InventoryEvent {
   List<Object> get props => [id];
 }
 
-class UpdateClothingItemEvent extends InventoryEvent {
+class UpdateClothingItemEvent extends WardrobeEvent {
   final ClothingItemEntity item;
 
   const UpdateClothingItemEvent(this.item);
@@ -47,10 +47,10 @@ class UpdateClothingItemEvent extends InventoryEvent {
   List<Object> get props => [item];
 }
 
-class AddPhotoToInventoryEvent extends InventoryEvent {
+class AddPhotoToWardrobeEvent extends WardrobeEvent {
   final String filePath;
 
-  const AddPhotoToInventoryEvent(this.filePath);
+  const AddPhotoToWardrobeEvent(this.filePath);
 
   @override
   List<Object> get props => [filePath];

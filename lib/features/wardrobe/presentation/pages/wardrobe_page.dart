@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zilant_look/features/inventory/presentation/bloc/inventory_bloc.dart';
-import 'package:zilant_look/features/inventory/presentation/bloc/inventory_event.dart';
-import 'package:zilant_look/features/inventory/presentation/bloc/inventory_state.dart';
+import 'package:zilant_look/features/wardrobe/presentation/bloc/wardrobe_bloc.dart';
+import 'package:zilant_look/features/wardrobe/presentation/bloc/wardrobe_event.dart';
+import 'package:zilant_look/features/wardrobe/presentation/bloc/wardrobe_state.dart';
 
-import '../widgets/inventory_item_widget.dart';
+import '../widgets/wardrobe_item_widget.dart';
 
-class InventoryPage extends StatelessWidget {
-  const InventoryPage({super.key});
+class WardrobePage extends StatelessWidget {
+  const WardrobePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inventory'),
+        title: const Text('Wardrobe'),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: () {
-              context.read<InventoryBloc>().add(
-                FilterInventoryByCategoryEvent('someCategory'),
+              context.read<WardrobeBloc>().add(
+                FilterWardrobeByCategoryEvent('someCategory'),
               );
             },
           ),
         ],
       ),
-      body: BlocBuilder<InventoryBloc, InventoryState>(
+      body: BlocBuilder<WardrobeBloc, WardrobeState>(
         builder: (context, state) {
-          if (state is InventoryLoadingState) {
+          if (state is WardrobeLoadingState) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is InventoryLoadedState) {
+          } else if (state is WardrobeLoadedState) {
             final items = state.items;
             return GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -40,17 +40,17 @@ class InventoryPage extends StatelessWidget {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
-                return InventoryItemWidget(
+                return WardrobeItemWidget(
                   item: item,
                   onDelete: () {
-                    context.read<InventoryBloc>().add(
+                    context.read<WardrobeBloc>().add(
                       DeleteClothingItemEvent(item.id),
                     );
                   },
                 );
               },
             );
-          } else if (state is InventoryErrorState) {
+          } else if (state is WardrobeErrorState) {
             return Center(child: Text(state.message));
           }
           return const Center(child: Text('No items found'));
