@@ -31,9 +31,9 @@ class PhotoRemoteDataSourceImpl implements PhotoRemoteDataSource {
 
       // Формируем корректный JSON
       final requestData = {
-        "user_name": username,
-        "photo": base64Image,
-        "subcategory": subcategory,
+        "userId": username,
+        "image": base64Image,
+        "type": subcategory,
       };
 
       // Отправляем как JSON

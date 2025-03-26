@@ -14,7 +14,7 @@ class _PhotoApiService implements PhotoApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://127.0.0.1:5000';
+    baseUrl ??= 'http://127.0.0.1:5000/';
   }
 
   final Dio _dio;
@@ -27,13 +27,15 @@ class _PhotoApiService implements PhotoApiService {
   Future<PhotoModel> uploadPhoto(Map<String, dynamic> photoData) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
+    _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(photoData);
     final _options = _setStreamType<PhotoModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
+      contentType: 'application/json',
     )
         .compose(
           _dio.options,
