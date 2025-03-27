@@ -2,9 +2,11 @@ import 'dart:io';
 import '../entities/photo_entity.dart';
 
 abstract class PhotoRepository {
-  Future<PhotoEntity> uploadPhoto(
+  Future<PhotoEntity> uploadClothesPhoto(
     File file,
     String username,
     String subcategory,
   );
+
+  Future<PhotoEntity> uploadHumanPhoto(File file, String username);
 }

@@ -9,8 +9,8 @@ abstract class PhotoApiService {
   factory PhotoApiService(Dio dio, {String? baseUrl}) = _PhotoApiService;
 
   @POST('/clothes')
-  Future<PhotoModel> uploadPhoto(@Body() Map<String, dynamic> photoData);
+  Future<PhotoModel> uploadClothesPhoto(@Body() Map<String, dynamic> photoData);
 
-  @GET('/clothes/processed/{filename}')
-  Future<PhotoModel> getPhoto(@Path('filename') String filename);
+  @POST('/human')
+  Future<PhotoModel> uploadHumanPhoto(@Body() Map<String, dynamic> photoData);
 }

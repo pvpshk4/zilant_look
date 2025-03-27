@@ -1,4 +1,3 @@
-export 'add_clothing_item.dart';
 export 'delete_clothing_item.dart';
 export 'filter_wardrobe_by_category.dart';
 export 'get_wardrobe_items.dart';

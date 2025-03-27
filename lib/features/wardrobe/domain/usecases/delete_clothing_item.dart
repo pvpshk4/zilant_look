@@ -6,6 +6,6 @@ class DeleteClothingItemUseCase {
   DeleteClothingItemUseCase(this._wardrobeRepositoryImpl);
 
   Future<void> call(String id) async {
-    return await _wardrobeRepositoryImpl.deleteClothingItem(id);
+    await _wardrobeRepositoryImpl.deleteClothingItem(id);
   }
 }

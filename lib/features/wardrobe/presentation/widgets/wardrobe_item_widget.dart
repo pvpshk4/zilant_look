@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:zilant_look/common/domain/entities/clothing_item_entity.dart';
 
 class WardrobeItemWidget extends StatelessWidget {
-  final ClothingItemEntity item;
-  final VoidCallback onDelete;
+  final String title;
+  final String subtitle;
 
   const WardrobeItemWidget({
     super.key,
-    required this.item,
-    required this.onDelete,
+    required this.title,
+    required this.subtitle,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        children: [
-          Expanded(child: Image.network(item.imageUrl, fit: BoxFit.cover)),
-          Padding(padding: const EdgeInsets.all(8.0), child: Text(item.name)),
-          IconButton(icon: const Icon(Icons.delete), onPressed: onDelete),
-        ],
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }

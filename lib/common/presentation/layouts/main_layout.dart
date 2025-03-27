@@ -1,15 +1,19 @@
+// main_layout.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+import '../widgets/custom_bottom_navigation_bar.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget child;
   final int currentIndex;
+  final List<String> routes;
 
   const MainLayout({
     super.key,
     required this.child,
     required this.currentIndex,
+    required this.routes,
   });
 
   @override
@@ -29,59 +33,16 @@ class _MainLayoutState extends State<MainLayout> {
     setState(() {
       _currentIndex = index;
     });
-
-    switch (index) {
-      case 0:
-        context.go('/');
-        break;
-      case 1:
-        context.go('/catalog');
-        break;
-      case 2:
-        context.go('/wardrobe');
-        break;
-      case 3:
-        context.go('/profile');
-        break;
-    }
+    context.go(widget.routes[index]);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: widget.child,
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 10,
-              spreadRadius: 2,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: _onItemTapped,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: Colors.purple,
-          unselectedItemColor: Colors.grey,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-          iconSize: 28,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart),
-              label: 'Catalog',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(MdiIcons.wardrobe),
-              label: 'Wardrobe',
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          ],
-        ),
+      bottomNavigationBar: CustomBottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onItemTapped,
       ),
     );
   }

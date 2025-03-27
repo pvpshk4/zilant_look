@@ -1,84 +1,42 @@
-import 'package:http/http.dart' as http;
+// wardrobe_remote_data_source.dart
 import 'package:zilant_look/common/data/models/clothing_item_model.dart';
-import 'dart:convert';
+import 'wardrobe_api_service.dart';
 
 abstract class WardrobeRemoteDataSource {
-  Future<List<ClothingItemModel>> getWardrobeItems();
-  Future<List<ClothingItemModel>> filterWardrobeByCategory(String category);
-  Future<void> addClothingItem(ClothingItemModel item);
+  Future<List<ClothingItemModel>> getWardrobeItems({
+    required int limit,
+    required int offset,
+  });
+
   Future<void> deleteClothingItem(String id);
+
   Future<void> updateClothingItem(ClothingItemModel item);
 }
 
 class WardrobeRemoteDataSourceImpl implements WardrobeRemoteDataSource {
-  final http.Client client;
+  final WardrobeApiService _apiService;
 
-  WardrobeRemoteDataSourceImpl(this.client);
-
-  @override
-  Future<List<ClothingItemModel>> getWardrobeItems() async {
-    final response = await client.get(
-      Uri.parse('https://api.example.com/wardrobe'),
-    );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonList = json.decode(response.body);
-      return jsonList.map((json) => ClothingItemModel.fromJson(json)).toList();
-    } else {
-      throw Exception("Failed to load wardrobe");
-    }
-  }
+  WardrobeRemoteDataSourceImpl(this._apiService);
 
   @override
-  Future<List<ClothingItemModel>> filterWardrobeByCategory(
-    String category,
-  ) async {
-    final response = await client.get(
-      Uri.parse('https://api.example.com/wardrobe?category=$category'),
+  Future<List<ClothingItemModel>> getWardrobeItems({
+    required int limit,
+    required int offset,
+  }) async {
+    final response = await _apiService.getWardrobeItems(
+      limit: limit,
+      offset: offset,
     );
-
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonList = json.decode(response.body);
-      return jsonList.map((json) => ClothingItemModel.fromJson(json)).toList();
-    } else {
-      throw Exception("Failed to filter wardrobe by category");
-    }
-  }
-
-  @override
-  Future<void> addClothingItem(ClothingItemModel item) async {
-    final response = await client.post(
-      Uri.parse('https://api.example.com/wardrobe'),
-      body: json.encode(item.toJson()),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode != 201) {
-      throw Exception("Failed to add item");
-    }
+    return response.map((item) => ClothingItemModel.fromJson(item)).toList();
   }
 
   @override
   Future<void> deleteClothingItem(String id) async {
-    final response = await client.delete(
-      Uri.parse('https://api.example.com/wardrobe/$id'),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception("Failed to delete item");
-    }
+    await _apiService.deleteClothingItem(id);
   }
 
   @override
   Future<void> updateClothingItem(ClothingItemModel item) async {
-    final response = await client.put(
-      Uri.parse('https://api.example.com/wardrobe/${item.id}'),
-      body: json.encode(item.toJson()),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception("Failed to update item");
-    }
+    await _apiService.updateClothingItem(item.id, item.toJson());
   }
 }

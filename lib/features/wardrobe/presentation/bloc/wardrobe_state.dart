@@ -1,12 +1,11 @@
 import 'package:equatable/equatable.dart';
-
-import '../../../../common/domain/entities/clothing_item_entity.dart';
+import 'package:zilant_look/common/domain/entities/clothing_item_entity.dart';
 
 abstract class WardrobeState extends Equatable {
   const WardrobeState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class WardrobeInitialState extends WardrobeState {}
@@ -19,7 +18,7 @@ class WardrobeLoadedState extends WardrobeState {
   const WardrobeLoadedState(this.items);
 
   @override
-  List<Object> get props => [items];
+  List<Object?> get props => [items];
 }
 
 class WardrobeFilteredState extends WardrobeState {
@@ -28,8 +27,10 @@ class WardrobeFilteredState extends WardrobeState {
   const WardrobeFilteredState(this.items);
 
   @override
-  List<Object> get props => [items];
+  List<Object?> get props => [items];
 }
+
+class WardrobeLoadingMoreState extends WardrobeState {}
 
 class WardrobeErrorState extends WardrobeState {
   final String message;
@@ -37,5 +38,5 @@ class WardrobeErrorState extends WardrobeState {
   const WardrobeErrorState(this.message);
 
   @override
-  List<Object> get props => [message];
+  List<Object?> get props => [message];
 }

@@ -24,18 +24,16 @@ class _PhotoApiService implements PhotoApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<PhotoModel> uploadPhoto(Map<String, dynamic> photoData) async {
+  Future<PhotoModel> uploadClothesPhoto(Map<String, dynamic> photoData) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Content-Type': 'application/json'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(photoData);
     final _options = _setStreamType<PhotoModel>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
-      contentType: 'application/json',
     )
         .compose(
           _dio.options,
@@ -60,19 +58,20 @@ class _PhotoApiService implements PhotoApiService {
   }
 
   @override
-  Future<PhotoModel> getPhoto(String filename) async {
+  Future<PhotoModel> uploadHumanPhoto(Map<String, dynamic> photoData) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(photoData);
     final _options = _setStreamType<PhotoModel>(Options(
-      method: 'GET',
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/clothes/processed/${filename}',
+          '/human',
           queryParameters: queryParameters,
           data: _data,
         )

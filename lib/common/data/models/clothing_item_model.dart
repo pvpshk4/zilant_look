@@ -1,58 +1,42 @@
-import 'dart:convert';
-
+// clothing_item_model.dart
 import 'package:zilant_look/common/domain/entities/clothing_item_entity.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'clothing_item_model.g.dart';
+
+@JsonSerializable()
 class ClothingItemModel extends ClothingItemEntity {
   const ClothingItemModel({
     required super.id,
     required super.name,
     required super.imageUrl,
     required super.category,
+    required super.subcategory,
   });
-  factory ClothingItemModel.fromMap(Map<String, dynamic> map) {
-    return ClothingItemModel(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      imageUrl: map['imageUrl'] as String,
-      category: map['category'] as String,
-    );
-  }
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'id': id,
-      'name': name,
-      'imageUrl': imageUrl,
-      'category': category,
-    };
-  }
 
-  String toJson() => json.encode(toMap());
-
-  factory ClothingItemModel.fromJson(String source) =>
-      ClothingItemModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory ClothingItemModel.fromJson(Map<String, dynamic> json) =>
+      _$ClothingItemModelFromJson(json);
 
   @override
-  bool get stringify => true;
-}
+  Map<String, dynamic> toJson() => _$ClothingItemModelToJson(this);
 
-extension ClothingItemModelExtension on ClothingItemModel {
-  ClothingItemEntity toEntity() {
+  static ClothingItemEntity toEntity(ClothingItemModel model) {
     return ClothingItemEntity(
-      id: id,
-      name: name,
-      imageUrl: imageUrl,
-      category: category,
+      id: model.id,
+      name: model.name,
+      imageUrl: model.imageUrl,
+      category: model.category,
+      subcategory: model.subcategory,
     );
   }
-}
 
-extension ClothingItemEntityExtension on ClothingItemEntity {
-  ClothingItemModel toModel() {
+  static ClothingItemModel fromEntity(ClothingItemEntity entity) {
     return ClothingItemModel(
-      id: id,
-      name: name,
-      imageUrl: imageUrl,
-      category: category,
+      id: entity.id,
+      name: entity.name,
+      imageUrl: entity.imageUrl,
+      category: entity.category,
+      subcategory: entity.subcategory,
     );
   }
 }

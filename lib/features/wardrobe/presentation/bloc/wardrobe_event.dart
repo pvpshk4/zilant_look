@@ -11,22 +11,23 @@ abstract class WardrobeEvent extends Equatable {
 
 class LoadWardrobeEvent extends WardrobeEvent {}
 
-class FilterWardrobeByCategoryEvent extends WardrobeEvent {
-  final String category;
+class LoadMoreWardrobeItemsEvent extends WardrobeEvent {
+  final int limit;
+  final int offset;
 
-  const FilterWardrobeByCategoryEvent(this.category);
-
-  @override
-  List<Object> get props => [category];
+  const LoadMoreWardrobeItemsEvent({required this.limit, required this.offset});
 }
 
-class AddClothingItemEvent extends WardrobeEvent {
-  final ClothingItemEntity item;
+class FilterWardrobeByCategoryEvent extends WardrobeEvent {
+  final String category;
+  final String subcategory;
+  final String filter;
 
-  const AddClothingItemEvent(this.item);
-
-  @override
-  List<Object> get props => [item];
+  const FilterWardrobeByCategoryEvent({
+    required this.category,
+    required this.subcategory,
+    required this.filter,
+  });
 }
 
 class DeleteClothingItemEvent extends WardrobeEvent {

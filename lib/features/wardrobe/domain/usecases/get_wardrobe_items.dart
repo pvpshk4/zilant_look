@@ -6,7 +6,13 @@ class GetWardrobeItemsUseCase {
 
   GetWardrobeItemsUseCase(this._wardrobeRepositoryImpl);
 
-  Future<List<ClothingItemEntity>> call() async {
-    return await _wardrobeRepositoryImpl.getWardrobeItems();
+  Future<List<ClothingItemEntity>> call({
+    required int limit,
+    required int offset,
+  }) async {
+    return await _wardrobeRepositoryImpl.getWardrobeItems(
+      limit: limit,
+      offset: offset,
+    );
   }
 }
