@@ -12,12 +12,16 @@ class PhotoRepositoryImpl implements PhotoRepository {
   Future<PhotoEntity> uploadClothesPhoto(
     File file,
     String username,
+    String category,
     String subcategory,
+    String sub_subcategory,
   ) async {
     final photo = await remoteDataSource.uploadClothesPhoto(
       file,
       username,
+      category,
       subcategory,
+      sub_subcategory,
     );
     return photo;
   }

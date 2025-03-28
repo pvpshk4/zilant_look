@@ -3,22 +3,23 @@ import 'package:equatable/equatable.dart';
 
 class PhotoEntity extends Equatable {
   final String id;
-  final String filePath;
+  final String imageBase64;
   final DateTime createdAt;
+
   const PhotoEntity({
     required this.id,
-    required this.filePath,
+    required this.imageBase64,
     required this.createdAt,
   });
 
-  PhotoEntity copyWith({String? id, String? filePath, DateTime? createdAt}) {
+  PhotoEntity copyWith({String? id, String? imageBase64, DateTime? createdAt}) {
     return PhotoEntity(
       id: id ?? this.id,
-      filePath: filePath ?? this.filePath,
+      imageBase64: imageBase64 ?? this.imageBase64,
       createdAt: createdAt ?? this.createdAt,
     );
   }
 
   @override
-  List<Object> get props => [id, filePath, createdAt];
+  List<Object> get props => [id, imageBase64, createdAt];
 }

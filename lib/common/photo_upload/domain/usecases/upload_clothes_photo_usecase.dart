@@ -10,12 +10,16 @@ class UploadClothesPhotoUsecase {
   Future<PhotoEntity> call(
     File file,
     String username,
+    String category,
     String subcategory,
+    String sub_subcategory,
   ) async {
     return await _uploadPhotoRepositoryImpl.uploadClothesPhoto(
       file,
       username,
+      category,
       subcategory,
+      sub_subcategory,
     );
   }
 }

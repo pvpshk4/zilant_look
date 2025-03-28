@@ -41,7 +41,7 @@ class PhotoUploadPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.file(File(state.photo.filePath)),
+                    Image.file(File(state.photo.imageBase64)),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {

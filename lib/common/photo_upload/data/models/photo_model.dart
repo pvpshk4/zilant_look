@@ -4,22 +4,25 @@ import 'package:zilant_look/common/photo_upload/domain/entities/photo_entity.dar
 class PhotoModel extends PhotoEntity {
   const PhotoModel({
     required super.id,
-    required super.filePath,
+    required super.imageBase64,
     required super.createdAt,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'filePath': filePath,
+      'filePath': imageBase64,
       'createdAt': createdAt.millisecondsSinceEpoch,
     };
   }
 
   factory PhotoModel.fromMap(Map<String, dynamic> map) {
     return PhotoModel(
-      id: map['image_base64']?.hashCode.toString() ?? '0', // Временное решение
-      filePath: map['image_base64'] ?? '',
+      id:
+          map['status'] == 'success'
+              ? 'success'
+              : 'error', // Используем статус как ID
+      imageBase64: map['image_base64'] ?? '', // Сохраняем Base64-изображение
       createdAt: DateTime.now(),
     );
   }
