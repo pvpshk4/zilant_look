@@ -1,24 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/photo_upload_bloc.dart';
+import '../bloc/photo_upload_event.dart';
+// Импортируем UploadType из photo_upload_page.dart, чтобы не было дублирования
+import '../pages/photo_upload_page.dart';
 
 class PhotoPickerWidget extends StatelessWidget {
-  final Function(String) onPhotoSelected;
+  final UploadType uploadType;
 
-  const PhotoPickerWidget({super.key, required this.onPhotoSelected});
+  const PhotoPickerWidget({super.key, required this.uploadType});
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () async {
-        final imagePicker = ImagePicker();
-        final pickedFile = await imagePicker.pickImage(
-          source: ImageSource.gallery,
-        );
-        if (pickedFile != null) {
-          onPhotoSelected(pickedFile.path);
-        }
-      },
-      child: Icon(Icons.add_a_photo),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.camera_alt),
+          onPressed: () {
+            context.read<PhotoUploadBloc>().add(
+              const TakePhotoFromCameraEvent(),
+            );
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.photo_library),
+          onPressed: () {
+            context.read<PhotoUploadBloc>().add(
+              const ChoosePhotoFromGalleryEvent(),
+            );
+          },
+        ),
+      ],
     );
   }
 }

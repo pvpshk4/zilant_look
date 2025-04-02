@@ -1,65 +1,39 @@
-import 'dart:io';
 import 'package:equatable/equatable.dart';
 
 abstract class PhotoUploadEvent extends Equatable {
   const PhotoUploadEvent();
-}
-
-class ChoosePhotoFromGalleryEvent extends PhotoUploadEvent {
-  final String username;
-  final String? category;
-  final String? subcategory;
-  final String? sub_subcategory;
-
-  const ChoosePhotoFromGalleryEvent({
-    required this.username,
-    this.category,
-    this.subcategory,
-    this.sub_subcategory,
-  });
 
   @override
-  List<Object?> get props => [username, category, subcategory, sub_subcategory];
+  List<Object?> get props => [];
 }
 
 class TakePhotoFromCameraEvent extends PhotoUploadEvent {
-  final String username;
-  final String? category;
-  final String? subcategory;
-  final String? sub_subcategory;
-
-  const TakePhotoFromCameraEvent({
-    required this.username,
-    this.category,
-    this.subcategory,
-    this.sub_subcategory,
-  });
-
-  @override
-  List<Object?> get props => [username, category, subcategory, sub_subcategory];
+  const TakePhotoFromCameraEvent();
 }
 
-class UploadPhotoEvent extends PhotoUploadEvent {
-  final File file;
-  final String username;
-  final String? category;
-  final String? subcategory;
-  final String? sub_subcategory;
+class ChoosePhotoFromGalleryEvent extends PhotoUploadEvent {
+  const ChoosePhotoFromGalleryEvent();
+}
 
-  const UploadPhotoEvent({
-    required this.file,
-    required this.username,
-    this.category,
-    this.subcategory,
-    this.sub_subcategory,
+class SelectCategoryEvent extends PhotoUploadEvent {
+  final String category;
+  final String subcategory;
+  final String subSubcategory;
+
+  const SelectCategoryEvent({
+    required this.category,
+    required this.subcategory,
+    required this.subSubcategory,
   });
 
   @override
-  List<Object?> get props => [
-    file,
-    username,
-    category,
-    subcategory,
-    sub_subcategory,
-  ];
+  List<Object?> get props => [category, subcategory, subSubcategory];
+}
+
+class SavePhotoEvent extends PhotoUploadEvent {
+  const SavePhotoEvent();
+}
+
+class CancelPhotoUploadEvent extends PhotoUploadEvent {
+  const CancelPhotoUploadEvent();
 }

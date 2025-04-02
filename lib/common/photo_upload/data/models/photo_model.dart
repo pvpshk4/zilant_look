@@ -3,36 +3,42 @@ import 'package:zilant_look/common/photo_upload/domain/entities/photo_entity.dar
 
 class PhotoModel extends PhotoEntity {
   const PhotoModel({
-    required super.id,
-    required super.imageBase64,
-    required super.createdAt,
+    required super.user_name,
+    required super.image,
+    required super.category,
+    required super.subcategory,
+    required super.sub_subcategory,
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
-      'filePath': imageBase64,
-      'createdAt': createdAt.millisecondsSinceEpoch,
+      'user_name': user_name,
+      'image': image,
+      'category': category,
+      'subcategory': subcategory,
+      'sub_subcategory': sub_subcategory,
     };
   }
 
   factory PhotoModel.fromMap(Map<String, dynamic> map) {
     return PhotoModel(
-      id:
-          map['status'] == 'success'
-              ? 'success'
-              : 'error', // Используем статус как ID
-      imageBase64: map['image_base64'] ?? '', // Сохраняем Base64-изображение
-      createdAt: DateTime.now(),
+      user_name: map['user_name'] ?? '',
+      image: map['image'] ?? '',
+      category: map['category'] ?? '',
+      subcategory: map['subcategory'] ?? '',
+      sub_subcategory: map['sub_subcategory'] ?? '',
     );
   }
 
   String toJson() => json.encode(toMap());
 
   factory PhotoModel.fromJson(Map<String, dynamic> json) {
-    return PhotoModel.fromMap(json);
+    return PhotoModel(
+      user_name: json['user_name'] ?? '',
+      image: json['image'] ?? '',
+      category: json['category'] ?? '',
+      subcategory: json['subcategory'] ?? '',
+      sub_subcategory: json['sub_subcategory'] ?? '',
+    );
   }
-
-  @override
-  bool get stringify => true;
 }

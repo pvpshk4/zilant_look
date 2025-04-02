@@ -45,7 +45,9 @@ class _WardrobeApiService implements WardrobeApiService {
     late List<Map<String, dynamic>> _value;
     try {
       _value =
-          _result.data!.map((dynamic i) => i as Map<String, dynamic>).toList();
+          _result.data!
+              .map((dynamic i) => Map<String, dynamic>.from(i))
+              .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

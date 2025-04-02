@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:zilant_look/common/photo_upload/data/data_sources/remote/photo_api_service.dart';
 import 'package:zilant_look/common/photo_upload/data/models/photo_model.dart';
 import 'package:dio/dio.dart';
@@ -34,12 +33,6 @@ class PhotoRemoteDataSourceImpl implements PhotoRemoteDataSource {
     try {
       final bytes = await file.readAsBytes();
       final base64Image = base64Encode(bytes);
-      if (kDebugMode) {
-        print("Base64 Image Length: ${base64Image.length}");
-        print(
-          "Base64 Image Sample: ${base64Image.substring(0, 100)}...",
-        ); // Логируем первые 100 символов
-      }
 
       // Формируем корректный JSON
       final requestData = {

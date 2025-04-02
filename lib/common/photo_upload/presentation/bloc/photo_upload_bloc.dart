@@ -3,14 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../domain/usecases/upload_clothes_photo_usecase.dart';
 import '../../domain/usecases/upload_human_photo_usecase.dart';
-import 'package:zilant_look/common/photo_upload/presentation/bloc/photo_upload_event.dart';
-import 'package:zilant_look/common/photo_upload/presentation/bloc/photo_upload_state.dart';
-import 'package:zilant_look/common/photo_upload/test_values_config.dart'; //Тестовые значения
+import 'photo_upload_event.dart';
+import 'photo_upload_state.dart';
 
 class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
   final UploadClothesPhotoUsecase uploadClothesPhoto;
   final UploadHumanPhotoUsecase uploadHumanPhoto;
   final ImagePicker _picker = ImagePicker();
+
+  File? _selectedImage; // Локальное хранилище выбранного фото
+  String? _category;
+  String? _subcategory;
+  String? _subSubcategory;
 
   PhotoUploadBloc({
     required this.uploadClothesPhoto,
@@ -18,7 +22,9 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
   }) : super(PhotoUploadInitialState()) {
     on<TakePhotoFromCameraEvent>(_onTakePhotoFromCamera);
     on<ChoosePhotoFromGalleryEvent>(_onChoosePhotoFromGallery);
-    on<UploadPhotoEvent>(_onUploadPhoto);
+    on<SelectCategoryEvent>(_onSelectCategory);
+    on<SavePhotoEvent>(_onSavePhoto);
+    on<CancelPhotoUploadEvent>(_onCancelPhotoUpload);
   }
 
   Future<void> _onTakePhotoFromCamera(
@@ -29,27 +35,8 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.camera);
       if (image != null) {
-        add(
-          UploadPhotoEvent(
-            file: File(image.path),
-            username: _getTestValue(
-              event.username,
-              TestValuesConfig.testUsername,
-            ),
-            category: _getTestValue(
-              event.category,
-              TestValuesConfig.testCategory,
-            ),
-            subcategory: _getTestValue(
-              event.subcategory,
-              TestValuesConfig.testSubcategory,
-            ),
-            sub_subcategory: _getTestValue(
-              event.sub_subcategory,
-              TestValuesConfig.testSubSubcategory,
-            ),
-          ),
-        );
+        _selectedImage = File(image.path); // Сохраняем выбранный файл локально
+        emit(PhotoUploadImageSelectedState(imagePath: _selectedImage!.path));
       } else {
         emit(const PhotoUploadFailureState(message: 'No image selected'));
       }
@@ -66,27 +53,8 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image != null) {
-        add(
-          UploadPhotoEvent(
-            file: File(image.path),
-            username: _getTestValue(
-              event.username,
-              TestValuesConfig.testUsername,
-            ),
-            category: _getTestValue(
-              event.category,
-              TestValuesConfig.testCategory,
-            ),
-            subcategory: _getTestValue(
-              event.subcategory,
-              TestValuesConfig.testSubcategory,
-            ),
-            sub_subcategory: _getTestValue(
-              event.sub_subcategory,
-              TestValuesConfig.testSubSubcategory,
-            ),
-          ),
-        );
+        _selectedImage = File(image.path); // Сохраняем выбранный файл локально
+        emit(PhotoUploadImageSelectedState(imagePath: _selectedImage!.path));
       } else {
         emit(const PhotoUploadFailureState(message: 'No image selected'));
       }
@@ -95,46 +63,64 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
     }
   }
 
-  Future<void> _onUploadPhoto(
-    UploadPhotoEvent event,
+  Future<void> _onSelectCategory(
+    SelectCategoryEvent event,
     Emitter<PhotoUploadState> emit,
   ) async {
+    _category = event.category;
+    _subcategory = event.subcategory;
+    _subSubcategory = event.subSubcategory;
+    emit(
+      CategorySelectionState(
+        category: _category!,
+        subcategory: _subcategory!,
+        subSubcategory: _subSubcategory!,
+      ),
+    );
+  }
+
+  Future<void> _onSavePhoto(
+    SavePhotoEvent event,
+    Emitter<PhotoUploadState> emit,
+  ) async {
+    if (_selectedImage == null) {
+      emit(const PhotoUploadFailureState(message: 'No image selected'));
+      return;
+    }
+
     emit(PhotoUploadLoadingState());
     try {
-      if (event.category == null) {
-        emit(PhotoUploadFailureState(message: 'Category is required'));
+      if (_category == null) {
+        // Загрузка фото человека
+        final photoEntity = await uploadHumanPhoto(
+          _selectedImage!,
+          "default_user", // Можно передать имя пользователя через параметры
+        );
+        emit(PhotoUploadSuccessState(photo: photoEntity));
+      } else {
+        // Загрузка фото одежды
+        final photoEntity = await uploadClothesPhoto(
+          _selectedImage!,
+          "default_user", // Можно передать имя пользователя через параметры
+          _category!,
+          _subcategory!,
+          _subSubcategory!,
+        );
+        emit(PhotoUploadSuccessState(photo: photoEntity));
       }
-      if (event.subcategory == null) {
-        emit(PhotoUploadFailureState(message: 'Subcategory is required'));
-        return;
-      }
-
-      if (event.sub_subcategory == null) {
-        emit(PhotoUploadFailureState(message: 'Sub-subcategory is required'));
-        return;
-      }
-
-      final photoEntity = await uploadClothesPhoto(
-        event.file,
-        _getTestValue(event.username, TestValuesConfig.testUsername),
-        _getTestValue(event.category, TestValuesConfig.testCategory),
-        _getTestValue(event.subcategory, TestValuesConfig.testSubcategory),
-        _getTestValue(
-          event.sub_subcategory,
-          TestValuesConfig.testSubSubcategory,
-        ),
-      );
-
-      emit(PhotoUploadSuccessState(photo: photoEntity));
     } catch (e) {
       emit(PhotoUploadFailureState(message: e.toString()));
     }
   }
 
-  // Метод для получения тестового значения
-  String _getTestValue(String? value, String testValue) {
-    return TestValuesConfig.useTestValues && (value == null || value.isEmpty)
-        ? testValue
-        : value!;
+  Future<void> _onCancelPhotoUpload(
+    CancelPhotoUploadEvent event,
+    Emitter<PhotoUploadState> emit,
+  ) async {
+    _selectedImage = null;
+    _category = null;
+    _subcategory = null;
+    _subSubcategory = null;
+    emit(PhotoUploadInitialState());
   }
 }

@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:zilant_look/common/photo_upload/domain/entities/photo_entity.dart';
+import '../../domain/entities/photo_entity.dart';
 
 abstract class PhotoUploadState extends Equatable {
   const PhotoUploadState();
@@ -28,4 +28,28 @@ class PhotoUploadFailureState extends PhotoUploadState {
 
   @override
   List<Object> get props => [message];
+}
+
+class PhotoUploadImageSelectedState extends PhotoUploadState {
+  final String imagePath;
+
+  const PhotoUploadImageSelectedState({required this.imagePath});
+
+  @override
+  List<Object> get props => [imagePath];
+}
+
+class CategorySelectionState extends PhotoUploadState {
+  final String category;
+  final String subcategory;
+  final String subSubcategory;
+
+  const CategorySelectionState({
+    required this.category,
+    required this.subcategory,
+    required this.subSubcategory,
+  });
+
+  @override
+  List<Object> get props => [category, subcategory, subSubcategory];
 }
