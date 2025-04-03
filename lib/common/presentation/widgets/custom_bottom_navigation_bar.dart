@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../config/theme/app_colors.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -14,73 +14,48 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: currentIndex,
-      onTap: onTap,
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: AppColors.backgroundColor,
-      selectedItemColor: AppColors.primaryColor,
-      unselectedItemColor: AppColors.secondaryColor,
-      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-      iconSize: 28,
-      items: [
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            'assets/icons/home_icon.svg',
+    return BottomAppBar(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNavItem('home_icon.svg', 'Главная', 0, size: 24),
+          _buildNavItem('catalog_icon.svg', 'Каталог', 1, size: 20),
+          const SizedBox(),
+          _buildNavItem('wardrobe_icon.svg', 'Гардероб', 2, size: 24),
+          _buildNavItem('profile_icon.svg', 'Профиль', 3),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem(
+    String icon,
+    String label,
+    int index, {
+    double size = 22,
+  }) {
+    return GestureDetector(
+      onTap: () => onTap(index),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SvgPicture.asset(
+            'assets/icons/$icon',
+            width: size,
+            height: size,
             colorFilter: ColorFilter.mode(
-              currentIndex == 0
+              index == currentIndex
                   ? AppColors.primaryColor
                   : AppColors.secondaryColor,
               BlendMode.srcIn,
             ),
-            width: 24,
-            height: 24,
           ),
-          label: 'Главная',
-        ),
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            'assets/icons/catalog_icon.svg',
-            colorFilter: ColorFilter.mode(
-              currentIndex == 1
-                  ? AppColors.primaryColor
-                  : AppColors.secondaryColor,
-              BlendMode.srcIn,
-            ),
-            width: 22,
-            height: 22,
+          Text(
+            label,
+            style: const TextStyle(fontSize: 12, fontFamily: 'SFPro-Medium'),
           ),
-          label: 'Каталог',
-        ),
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            'assets/icons/wardrobe_icon.svg',
-            colorFilter: ColorFilter.mode(
-              currentIndex == 2
-                  ? AppColors.primaryColor
-                  : AppColors.secondaryColor,
-              BlendMode.srcIn,
-            ),
-            width: 24,
-            height: 24,
-          ),
-          label: 'Гардероб',
-        ),
-        BottomNavigationBarItem(
-          icon: SvgPicture.asset(
-            'assets/icons/profile_icon.svg',
-            colorFilter: ColorFilter.mode(
-              currentIndex == 3
-                  ? AppColors.primaryColor
-                  : AppColors.secondaryColor,
-              BlendMode.srcIn,
-            ),
-            width: 20,
-            height: 20,
-          ),
-          label: 'Профиль',
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

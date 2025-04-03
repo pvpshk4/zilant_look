@@ -51,10 +51,6 @@ class WardrobePage extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.go('/photo_upload'),
-        child: const Icon(Icons.add),
-      ),
     );
   }
 }
