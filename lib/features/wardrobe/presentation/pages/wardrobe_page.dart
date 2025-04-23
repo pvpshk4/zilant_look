@@ -18,7 +18,6 @@ class _WardrobePageState extends State<WardrobePage> {
   @override
   void initState() {
     super.initState();
-    // Проверяем текущее состояние, чтобы не загружать категории заново
     final currentState = context.read<WardrobeBloc>().state;
     if (currentState is! CategoriesLoadedState &&
         currentState is! WardrobeLoadedState) {
@@ -56,7 +55,7 @@ class _WardrobePageState extends State<WardrobePage> {
         buildWhen: (previous, current) {
           return current is WardrobeLoadingState ||
               current is CategoriesLoadedState ||
-              current is WardrobeLoadedState || // Добавляем WardrobeLoadedState
+              current is WardrobeLoadedState ||
               current is WardrobeErrorState;
         },
         builder: (context, state) {
@@ -64,14 +63,12 @@ class _WardrobePageState extends State<WardrobePage> {
             return const Center(child: CircularProgressIndicator());
           } else if (state is CategoriesLoadedState ||
               state is WardrobeLoadedState) {
-            // Извлекаем категории из состояния
             final categories =
                 state is CategoriesLoadedState
                     ? state.categories
                     : (state as WardrobeLoadedState).categories;
 
             if (categories.isEmpty) {
-              // Если категории пустые, можно вызвать загрузку
               context.read<WardrobeBloc>().add(LoadCategoriesEvent());
               return const Center(child: CircularProgressIndicator());
             }
