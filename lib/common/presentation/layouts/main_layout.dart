@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../config/theme/app_colors.dart';
+import '../../../core/resources/dialog_state.dart';
+import '../../photo_upload/presentation/pages/camera_page.dart';
 import '../widgets/custom_bottom_navigation_bar.dart';
 
 class MainLayout extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
-  final bool showFloatingButton;
+  final bool showCentralButton;
   final bool showBottomNavBar;
 
   const MainLayout({
     super.key,
     required this.navigationShell,
-    required this.showFloatingButton,
+    required this.showCentralButton,
     required this.showBottomNavBar,
   });
 
@@ -21,35 +23,41 @@ class MainLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          navigationShell, // Используем navigationShell для отображения текущей страницы
-        ],
-      ),
-      bottomNavigationBar:
-          showBottomNavBar
-              ? CustomBottomNavigationBar(
-                currentIndex: navigationShell.currentIndex,
-                onTap: (index) => _onItemTapped(context, index),
-                backgroundColor: Colors.white,
-                activeTextColor: AppColors.primaryColor,
-              )
-              : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton:
-          showFloatingButton
-              ? Padding(
-                padding: const EdgeInsets.only(top: 40),
-                child: FloatingActionButton(
-                  elevation: 10,
-                  onPressed: () => context.push('/upload-clothes-photo'),
-                  backgroundColor: AppColors.buttonColor,
-                  shape: const CircleBorder(),
-                  child: const Icon(Icons.add, color: Colors.white),
-                ),
-              )
-              : null,
+    return ValueListenableBuilder<ActiveDialog>(
+      valueListenable: DialogState.activeDialog,
+      builder: (context, activeDialog, child) {
+        final shouldShowBottomNavBar =
+            showBottomNavBar &&
+            (activeDialog == ActiveDialog.none ||
+                activeDialog == ActiveDialog.clothesCategorySelection);
+        final shouldShowCentralButton =
+            showCentralButton &&
+            activeDialog != ActiveDialog.clothesCategorySelection;
+
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: navigationShell,
+          bottomNavigationBar:
+              shouldShowBottomNavBar
+                  ? CustomBottomNavigationBar(
+                    currentIndex: navigationShell.currentIndex,
+                    onTap: (index) => _onItemTapped(context, index),
+                    backgroundColor: Colors.white,
+                    activeTextColor: AppColors.primaryColor,
+                    showCentralButton: shouldShowCentralButton,
+                    onCentralButtonTap: () {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CameraPage(isClothesUpload: true);
+                        },
+                      );
+                    },
+                  )
+                  : null,
+        );
+      },
     );
   }
 }

@@ -321,9 +321,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                     ),
                     const Padding(
                       padding: EdgeInsets.only(right: 12),
-                      child: SizedBox(
-                        width: 20,
-                      ), // Плейсхолдер для выравнивания
+                      child: SizedBox(width: 20),
                     ),
                   ],
                 ),

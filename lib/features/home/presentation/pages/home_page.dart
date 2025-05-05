@@ -1,10 +1,17 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:zilant_look/common/AppData/presentation/bloc/app_data_bloc.dart';
-import 'package:zilant_look/common/AppData/presentation/bloc/app_data_event.dart';
-import 'package:zilant_look/common/AppData/presentation/bloc/app_data_state.dart';
+import 'package:zilant_look/common/presentation/widgets/custom_scaffold.dart';
+import 'package:zilant_look/features/home/presentation/bloc/home_bloc.dart';
+import 'package:zilant_look/features/home/presentation/widgets/panel_content_widget.dart';
+import 'package:zilant_look/features/home/presentation/widgets/photo_list_widget.dart';
+import 'package:zilant_look/features/home/presentation/widgets/photo_toggle_button.dart';
+import 'package:zilant_look/features/home/presentation/widgets/background_photo.dart';
+
+import '../../../../common/AppData/presentation/bloc/app_data_event.dart';
+import '../../../../common/AppData/presentation/bloc/app_data_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,199 +21,138 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _isPhotoListVisible = false;
+  final ValueNotifier<bool> _isPhotoListVisible = ValueNotifier<bool>(false);
+  final PanelController _panelController = PanelController();
+  final ScrollController _mainScrollController = ScrollController();
+  final ScrollController _catalogScrollController = ScrollController();
+  final ScrollController _wardrobeScrollController = ScrollController();
+  final double _panelHeightClosed = 20.0;
+  int _selectedTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    // Загружаем данные приложения при инициализации страницы
-    context.read<AppDataBloc>().add(LoadAppDataEvent());
+    _mainScrollController.addListener(_handleMainScroll);
+  }
+
+  void _handleMainScroll() {
+    if (_mainScrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      if (_panelController.isPanelClosed) {
+        _panelController.open();
+      }
+    } else if (_mainScrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      if (_panelController.isPanelOpen) {
+        _panelController.close();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _isPhotoListVisible.dispose();
+    _mainScrollController.dispose();
+    _catalogScrollController.dispose();
+    _wardrobeScrollController.dispose();
+    super.dispose();
   }
 
   void _togglePhotoList() {
+    _isPhotoListVisible.value = !_isPhotoListVisible.value;
+  }
+
+  void _onTabSelected(int index) {
     setState(() {
-      _isPhotoListVisible = !_isPhotoListVisible;
+      _selectedTabIndex = index;
     });
+  }
+
+  void _onPhotoSelected(String? base64Photo) {
+    context.read<AppDataBloc>().add(SetSelectedPhotoEvent(base64Photo));
+    _togglePhotoList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Основной контент
-          Column(
-            children: [
-              // Верхняя часть с кнопкой (без слайдера)
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color:
-                            _isPhotoListVisible
-                                ? Colors.purple
-                                : Colors.transparent,
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.camera_alt,
-                          color:
-                              _isPhotoListVisible
-                                  ? Colors.white
-                                  : Colors.purple,
-                          size: 30,
-                        ),
-                        onPressed: _togglePhotoList,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Основной контент (заглушка)
-              const Expanded(
-                child: Center(
-                  child: Text(
-                    'Основной контент будет здесь',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          // Слайдер с фотографиями (накладывается поверх)
-          if (_isPhotoListVisible)
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                color: Colors.black.withValues(alpha: 50), // Полупрозрачный фон
-                child: SafeArea(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: Row(
+    final double panelHeightOpen = MediaQuery.of(context).size.height * 0.35;
+
+    return BlocProvider(
+      create: (context) => HomeBloc(context.read<AppDataBloc>()),
+      child: CustomScaffold(
+        body: Stack(
+          children: [
+            BackgroundPhoto(),
+            Column(
+              children: [
+                const SizedBox(height: 60),
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: _mainScrollController,
+                    child: Column(
                       children: [
-                        const SizedBox(
-                          width: 56,
-                        ), // Отступ для кнопки (16 padding + 40 иконка)
-                        Expanded(
-                          child: SizedBox(
-                            height: 100, // Высота слайдера
-                            child: BlocBuilder<AppDataBloc, AppDataState>(
-                              builder: (context, state) {
-                                if (state.isLoading) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                final photos = state.humanPhotos;
-                                return ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                  ),
-                                  itemCount:
-                                      photos.length +
-                                      1, // +1 для кнопки добавления
-                                  itemBuilder: (context, index) {
-                                    if (index == photos.length) {
-                                      // Кнопка добавления
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 4,
-                                        ),
-                                        child: Card(
-                                          elevation: 4,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                          child: InkWell(
-                                            onTap: () {
-                                              context.push(
-                                                '/upload-human-photo',
-                                              );
-                                              setState(() {
-                                                _isPhotoListVisible = false;
-                                              });
-                                            },
-                                            child: Container(
-                                              width: 80,
-                                              height: 100,
-                                              decoration: BoxDecoration(
-                                                color: Colors.purple,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: const Icon(
-                                                Icons.add,
-                                                color: Colors.white,
-                                                size: 40,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                    // Фотография человека
-                                    final photo = photos[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 4,
-                                      ),
-                                      child: Card(
-                                        elevation: 4,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
-                                          child: Image.memory(
-                                            base64Decode(
-                                              photo.contains(',')
-                                                  ? photo.split(',').last
-                                                  : photo,
-                                            ),
-                                            width: 80,
-                                            height: 100,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (
-                                              context,
-                                              error,
-                                              stackTrace,
-                                            ) {
-                                              return const Icon(Icons.error);
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          ),
+                        const SizedBox(height: 20),
+                        BlocBuilder<AppDataBloc, AppDataState>(
+                          builder: (context, state) {
+                            if (state.selectedHumanPhoto == null) {
+                              return const Center(
+                                child: Text(
+                                  'Выберите фотографию человека',
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
                         ),
-                        // Кнопка закрытия списка
-                        IconButton(
-                          icon: const Icon(Icons.close, color: Colors.grey),
-                          onPressed: _togglePhotoList,
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.7,
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-        ],
+            ValueListenableBuilder<bool>(
+              valueListenable: _isPhotoListVisible,
+              builder: (context, isVisible, child) {
+                if (!isVisible) return const SizedBox.shrink();
+                return PhotoListWidget(
+                  onPhotoSelected: _onPhotoSelected,
+                  onClose: _togglePhotoList,
+                );
+              },
+            ),
+            SlidingUpPanel(
+              controller: _panelController,
+              minHeight: _panelHeightClosed,
+              maxHeight: panelHeightOpen,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(24.0),
+                topRight: Radius.circular(24.0),
+              ),
+              boxShadow: const [],
+              panel: PanelContentWidget(
+                selectedTabIndex: _selectedTabIndex,
+                onTabSelected: _onTabSelected,
+                catalogScrollController: _catalogScrollController,
+                wardrobeScrollController: _wardrobeScrollController,
+              ),
+              collapsed: const SizedBox.shrink(),
+              color: Colors.transparent,
+            ),
+            ValueListenableBuilder<bool>(
+              valueListenable: _isPhotoListVisible,
+              builder: (context, isVisible, child) {
+                return PhotoToggleButton(
+                  isPhotoListVisible: isVisible,
+                  onTap: _togglePhotoList,
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

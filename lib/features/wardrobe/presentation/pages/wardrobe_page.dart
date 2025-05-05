@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zilant_look/common/presentation/widgets/custom_scaffold.dart';
 import '../bloc/wardrobe_bloc.dart';
 import '../bloc/wardrobe_event.dart';
 import '../bloc/wardrobe_state.dart';
@@ -35,6 +36,7 @@ class _WardrobePageState extends State<WardrobePage> {
     final encodedSubcategory = Uri.encodeComponent(subcategory);
     final route = '/wardrobe/products/$encodedCategory/$encodedSubcategory';
 
+    // ignore: body_might_complete_normally_catch_error
     navigationContext.push(route, extra: extra).catchError((e) {
       if (mounted) {
         ScaffoldMessenger.of(
@@ -46,7 +48,7 @@ class _WardrobePageState extends State<WardrobePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         title: const Text('Гардероб', style: TextStyle(fontSize: 20)),
         centerTitle: true,

@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 import 'package:zilant_look/common/data/models/clothing_item_model.dart';
-import 'package:zilant_look/common/data/models/photo_model.dart';
+import 'package:zilant_look/common/AppData/data/models/photo_model.dart';
 
 import '../../../../../common/AppData/data/data_sources/remote/app_data_api_service.dart';
 
@@ -21,8 +21,6 @@ abstract class WardrobeRemoteDataSource {
   });
 
   Future<void> deleteClothingItem(String id);
-
-  Future<void> updateClothingItem(ClothingItemModel item);
 
   Future<void> addWardrobeItem(ClothingItemModel item);
 }
@@ -62,7 +60,7 @@ class WardrobeRemoteDataSourceImpl implements WardrobeRemoteDataSource {
     required int page,
     required int limit,
   }) async {
-    final allItems = await _apiService.getClothingItems();
+    final allItems = await _apiService.getWardrobeItems();
     final filteredItems =
         allItems
             .where(
@@ -84,7 +82,7 @@ class WardrobeRemoteDataSourceImpl implements WardrobeRemoteDataSource {
     required String subcategory,
     required String filter,
   }) async {
-    final allItems = await _apiService.getClothingItems();
+    final allItems = await _apiService.getWardrobeItems();
     final filteredItems =
         allItems
             .where(
@@ -105,13 +103,6 @@ class WardrobeRemoteDataSourceImpl implements WardrobeRemoteDataSource {
   Future<void> deleteClothingItem(String id) async {
     throw UnimplementedError(
       'Delete operation not supported in AppDataApiService',
-    );
-  }
-
-  @override
-  Future<void> updateClothingItem(ClothingItemModel item) async {
-    throw UnimplementedError(
-      'Update operation not supported in AppDataApiService',
     );
   }
 

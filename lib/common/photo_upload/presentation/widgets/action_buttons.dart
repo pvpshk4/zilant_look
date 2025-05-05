@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zilant_look/config/theme/app_colors.dart';
 
 class ActionButtons extends StatelessWidget {
   final String? subSubcategory;
@@ -22,7 +23,7 @@ class ActionButtons extends StatelessWidget {
             onPressed: onCancel,
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 50),
-              backgroundColor: const Color.fromARGB(255, 188, 188, 188),
+              backgroundColor: AppColors.inactiveColor,
               foregroundColor: Colors.black,
             ),
             child: const Text(
@@ -37,7 +38,7 @@ class ActionButtons extends StatelessWidget {
             onPressed: subSubcategory != null ? onSave : null,
             style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity, 50),
-              backgroundColor: const Color.fromARGB(255, 30, 106, 19),
+              backgroundColor: AppColors.primaryColor,
               foregroundColor: Colors.white,
             ),
             child: const Text(

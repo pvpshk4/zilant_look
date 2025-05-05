@@ -75,12 +75,6 @@ class WardrobeRepositoryImpl implements WardrobeRepository {
   }
 
   @override
-  Future<void> updateClothingItem(ClothingItemEntity item) async {
-    final updatedModel = ClothingItemModel.fromEntity(item);
-    await _remoteDataSource.updateClothingItem(updatedModel);
-  }
-
-  @override
   Future<void> addWardrobeItem(ClothingItemEntity item) async {
     final model = ClothingItemModel.fromEntity(item);
     await _remoteDataSource.addWardrobeItem(model);

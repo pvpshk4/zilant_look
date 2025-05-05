@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zilant_look/common/photo_upload/presentation/bloc/photo_upload_bloc.dart';
 import 'package:zilant_look/common/AppData/presentation/bloc/app_data_bloc.dart';
+import 'package:zilant_look/features/home/presentation/bloc/home_bloc.dart';
+import 'package:zilant_look/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:zilant_look/features/wardrobe/presentation/bloc/wardrobe_bloc.dart';
 import 'package:zilant_look/injection_container.dart' as di;
 import 'config/routes/app_router.dart';
@@ -24,6 +26,8 @@ class MyApp extends StatelessWidget {
           create: (context) => di.sl<PhotoUploadBloc>(),
         ),
         BlocProvider<WardrobeBloc>(create: (context) => di.sl<WardrobeBloc>()),
+        BlocProvider<HomeBloc>(create: (context) => di.sl<HomeBloc>()),
+        BlocProvider<ProfileBloc>(create: (context) => di.sl<ProfileBloc>()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

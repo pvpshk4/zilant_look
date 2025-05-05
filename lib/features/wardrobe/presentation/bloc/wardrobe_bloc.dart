@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zilant_look/common/data/models/clothing_item_model.dart';
+import '../../../../config/app_constants.dart';
 import '../../data/data_sources/remote/wardrobe_remote_data_source.dart';
 import 'wardrobe_event.dart';
 import 'wardrobe_state.dart';
@@ -15,25 +16,6 @@ class WardrobeBloc extends Bloc<WardrobeEvent, WardrobeState> {
   List<String> _categoriesList = [];
   List<String> _subcategories = [];
 
-  final Map<String, Map<String, List<String>>> _categories = {
-    'Женское': {
-      'Платья': ['Вечерние', 'Повседневные', 'Коктейльные'],
-      'Верхняя одежда': ['Куртки', 'Пальто', 'Жилеты'],
-      'Аксессуары': ['Часы', 'Ремни', 'Шарфы'],
-      'Обувь': ['Ботинки', 'Туфли', 'Кроссовки'],
-    },
-    'Мужское': {
-      'Куртки': ['Парки', 'Бомберы', 'Ветровки'],
-      'Брюки': ['Джинсы', 'Шорты', 'Леггинсы'],
-      'Аксессуары': ['Часы', 'Ремни', 'Шарфы'],
-    },
-    'Детское': {
-      'Куртки': ['Зимние', 'Демисезонные', 'Лёгкие'],
-      'Штаны': ['Комбинезоны', 'Шорты', 'Леггинсы'],
-      'Аксессуары': ['Шапки', 'Перчатки', 'Шарфы'],
-    },
-  };
-
   WardrobeBloc({required WardrobeRemoteDataSource remoteDataSource})
     : _remoteDataSource = remoteDataSource,
       super(const WardrobeInitialState()) {
@@ -41,7 +23,6 @@ class WardrobeBloc extends Bloc<WardrobeEvent, WardrobeState> {
     on<LoadMoreWardrobeItemsEvent>(_onLoadMoreWardrobe);
     on<FilterWardrobeByCategoryEvent>(_onFilterWardrobe);
     on<DeleteClothingItemEvent>(_onDeleteClothingItem);
-    on<UpdateClothingItemEvent>(_onUpdateClothingItem);
     on<LoadCategoriesEvent>(_onLoadCategories);
     on<LoadSubcategoriesEvent>(_onLoadSubcategories);
     on<LoadSubSubcategoriesEvent>(_onLoadSubSubcategories);
@@ -66,7 +47,7 @@ class WardrobeBloc extends Bloc<WardrobeEvent, WardrobeState> {
       _allGroupedItems = {};
 
       final subSubcategories =
-          _categories[event.category]?[event.subcategory] ?? [];
+          categories[event.category]?[event.subcategory] ?? [];
 
       for (final subSubcategory in subSubcategories) {
         final items = await _remoteDataSource.getWardrobeItems(
@@ -240,56 +221,6 @@ class WardrobeBloc extends Bloc<WardrobeEvent, WardrobeState> {
     }
   }
 
-  Future<void> _onUpdateClothingItem(
-    UpdateClothingItemEvent event,
-    Emitter<WardrobeState> emit,
-  ) async {
-    emit(
-      WardrobeLoadingState(
-        subSubcategories: _subSubcategories,
-        categories: _categoriesList,
-        subcategories: _subcategories,
-      ),
-    );
-    try {
-      await _remoteDataSource.updateClothingItem(
-        ClothingItemModel.fromEntity(event.item),
-      );
-      _allGroupedItems.forEach((subSubcategory, items) {
-        _allGroupedItems[subSubcategory] =
-            items
-                .map(
-                  (item) =>
-                      item.id == event.item.id
-                          ? ClothingItemModel.fromEntity(event.item)
-                          : item,
-                )
-                .toList();
-      });
-      emit(
-        WardrobeLoadedState(
-          _allGroupedItems.map(
-            (key, items) =>
-                MapEntry(key, items.map(ClothingItemModel.toEntity).toList()),
-          ),
-          hasMoreItems: _hasMoreItems,
-          subSubcategories: _subSubcategories,
-          categories: _categoriesList,
-          subcategories: _subcategories,
-        ),
-      );
-    } catch (e) {
-      emit(
-        WardrobeErrorState(
-          'Не удалось обновить элемент: $e',
-          subSubcategories: _subSubcategories,
-          categories: _categoriesList,
-          subcategories: _subcategories,
-        ),
-      );
-    }
-  }
-
   Future<void> _onAddWardrobeItem(
     AddWardrobeItemEvent event,
     Emitter<WardrobeState> emit,
@@ -328,7 +259,7 @@ class WardrobeBloc extends Bloc<WardrobeEvent, WardrobeState> {
     LoadCategoriesEvent event,
     Emitter<WardrobeState> emit,
   ) async {
-    _categoriesList = _categories.keys.toList();
+    _categoriesList = categories.keys.toList();
     emit(
       CategoriesLoadedState(
         categories: _categoriesList,
@@ -342,7 +273,7 @@ class WardrobeBloc extends Bloc<WardrobeEvent, WardrobeState> {
     LoadSubcategoriesEvent event,
     Emitter<WardrobeState> emit,
   ) async {
-    _subcategories = _categories[event.category]?.keys.toList() ?? [];
+    _subcategories = categories[event.category]?.keys.toList() ?? [];
     emit(
       SubcategoriesLoadedState(
         subcategories: _subcategories,
@@ -356,7 +287,7 @@ class WardrobeBloc extends Bloc<WardrobeEvent, WardrobeState> {
     LoadSubSubcategoriesEvent event,
     Emitter<WardrobeState> emit,
   ) async {
-    _subSubcategories = _categories[event.category]?[event.subcategory] ?? [];
+    _subSubcategories = categories[event.category]?[event.subcategory] ?? [];
     emit(
       SubSubcategoriesLoadedState(
         subSubcategories: _subSubcategories,
@@ -379,9 +310,9 @@ class WardrobeBloc extends Bloc<WardrobeEvent, WardrobeState> {
     );
     try {
       String? foundCategory, foundSubcategory, foundSubSubcategory;
-      for (final category in _categories.keys) {
-        for (final subcategory in _categories[category]!.keys) {
-          for (final subSubcategory in _categories[category]![subcategory]!) {
+      for (final category in categories.keys) {
+        for (final subcategory in categories[category]!.keys) {
+          for (final subSubcategory in categories[category]![subcategory]!) {
             if (subSubcategory.toLowerCase().contains(
               event.query.toLowerCase(),
             )) {
@@ -436,9 +367,9 @@ class WardrobeBloc extends Bloc<WardrobeEvent, WardrobeState> {
   ) async {
     try {
       final List<Map<String, String>> allSubSubcategories = [];
-      for (final category in _categories.keys) {
-        for (final subcategory in _categories[category]!.keys) {
-          for (final subSubcategory in _categories[category]![subcategory]!) {
+      for (final category in categories.keys) {
+        for (final subcategory in categories[category]!.keys) {
+          for (final subSubcategory in categories[category]![subcategory]!) {
             allSubSubcategories.add({
               'category': category,
               'subcategory': subcategory,

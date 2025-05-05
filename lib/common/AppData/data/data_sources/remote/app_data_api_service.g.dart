@@ -55,7 +55,7 @@ class _AppDataApiService implements AppDataApiService {
   }
 
   @override
-  Future<List<PhotoModel>> getClothingItems() async {
+  Future<List<PhotoModel>> getCatalogItems() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -67,7 +67,42 @@ class _AppDataApiService implements AppDataApiService {
     )
         .compose(
           _dio.options,
-          '/clothing_items',
+          '/catalog_items',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<PhotoModel> _value;
+    try {
+      _value = _result.data!
+          .map((dynamic i) => PhotoModel.fromJson(i as Map<String, dynamic>))
+          .toList();
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<List<PhotoModel>> getWardrobeItems() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<List<PhotoModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/wardrobe_items',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -190,6 +225,37 @@ class _AppDataApiService implements AppDataApiService {
         .compose(
           _dio.options,
           '/clear_data',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    await _dio.fetch<void>(_options);
+  }
+
+  @override
+  Future<void> deletePhoto(
+    String id,
+    String type,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'id': id,
+      r'type': type,
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<void>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/delete_photo',
           queryParameters: queryParameters,
           data: _data,
         )

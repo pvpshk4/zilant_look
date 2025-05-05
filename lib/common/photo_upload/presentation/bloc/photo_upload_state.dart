@@ -47,3 +47,5 @@ class PhotoUploadPreviewState extends PhotoUploadState {
   @override
   List<Object?> get props => [imagePath];
 }
+
+class PhotoUploadResetState extends PhotoUploadState {}

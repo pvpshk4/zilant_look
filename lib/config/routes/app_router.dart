@@ -1,11 +1,10 @@
 import 'package:go_router/go_router.dart';
-import 'package:zilant_look/common/photo_upload/presentation/pages/camera_page.dart';
-import 'package:zilant_look/common/photo_upload/presentation/pages/clothes_category_selection_page.dart';
-import 'package:zilant_look/common/photo_upload/presentation/pages/human_photo_preview_page.dart';
 import 'package:zilant_look/common/presentation/layouts/main_layout.dart';
+import 'package:zilant_look/common/photo_upload/presentation/pages/clothes_category_selection_page.dart';
 import 'package:zilant_look/features/catalog/presentation/pages/catalog_page.dart';
 import 'package:zilant_look/features/home/presentation/pages/home_page.dart';
 import 'package:zilant_look/features/profile/presentation/pages/profile_page.dart';
+import 'package:zilant_look/features/profile/presentation/pages/deleted_photos_page.dart';
 import 'package:zilant_look/features/wardrobe/presentation/pages/wardrobe_page.dart';
 import 'package:zilant_look/features/wardrobe/presentation/pages/subcategories_page.dart';
 import 'package:zilant_look/features/wardrobe/presentation/pages/products_page.dart';
@@ -14,14 +13,10 @@ final GoRouter appRouter = GoRouter(
   routes: [
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        final isUploadPage = state.uri.path.contains('upload-');
-        final showBottomNavBar =
-            state.uri.path == '/upload-clothes-photo/category-selection' ||
-            !state.uri.path.startsWith('/upload-');
         return MainLayout(
           navigationShell: navigationShell,
-          showFloatingButton: !isUploadPage,
-          showBottomNavBar: showBottomNavBar,
+          showCentralButton: true,
+          showBottomNavBar: true,
         );
       },
       branches: [
@@ -58,40 +53,26 @@ final GoRouter appRouter = GoRouter(
                     );
                   },
                 ),
-              ],
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(path: '/profile', builder: (_, __) => ProfilePage()),
-          ],
-        ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/upload-human-photo',
-              builder: (_, __) => CameraPage(isClothesUpload: false),
-              routes: [
                 GoRoute(
-                  path: 'preview',
-                  builder:
-                      (_, state) => HumanPhotoPreviewPage(
-                        imagePath: state.extra as String,
-                      ),
+                  path: 'clothes-category-selection',
+                  builder: (context, state) {
+                    final imagePath = state.extra as String;
+                    return ClothesCategorySelectionPage(imagePath: imagePath);
+                  },
                 ),
               ],
             ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
             GoRoute(
-              path: '/upload-clothes-photo',
-              builder: (_, __) => CameraPage(isClothesUpload: true),
+              path: '/profile',
+              builder: (_, __) => const ProfilePage(),
               routes: [
                 GoRoute(
-                  path: 'category-selection',
-                  builder:
-                      (_, state) => ClothesCategorySelectionPage(
-                        imagePath: state.extra as String,
-                      ),
+                  path: 'deleted-photos',
+                  builder: (context, state) => const DeletedPhotosPage(),
                 ),
               ],
             ),

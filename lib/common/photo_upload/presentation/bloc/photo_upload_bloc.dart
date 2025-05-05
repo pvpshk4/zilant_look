@@ -24,12 +24,13 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
     on<CancelPhotoUploadEvent>(_onCancelPhotoUpload);
     on<SelectCategoryEvent>(_onSelectCategory);
     on<SavePhotoEvent>(_onSavePhoto);
+    on<ResetPhotoUploadEvent>(_onResetPhotoUpload);
   }
 
-  Future<void> _onSetUploadType(
+  void _onSetUploadType(
     SetUploadTypeEvent event,
     Emitter<PhotoUploadState> emit,
-  ) async {
+  ) {
     _isClothesUpload = event.isClothesUpload;
   }
 
@@ -48,7 +49,7 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
         }
       }
     } catch (e) {
-      emit(PhotoUploadFailureState('Ошибка при съемке фото: $e'));
+      emit(PhotoUploadFailureState('Ошибка при съёмке фото: $e'));
     }
   }
 
@@ -79,7 +80,8 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
     _category = null;
     _subcategory = null;
     _subSubcategory = null;
-    emit(PhotoUploadInitialState());
+    _isClothesUpload = false;
+    emit(PhotoUploadResetState());
   }
 
   Future<void> _onSelectCategory(
@@ -118,9 +120,8 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
           subcategory: _subcategory!,
           sub_subcategory: _subSubcategory!,
         );
-        // Убрали прямой вызов репозитория, оставили только событие
         _appDataBloc.add(
-          AddClothingItemEvent(
+          AddWardrobeItemEvent(
             fileBase64: photoEntity.image,
             userName: username,
             category: photoEntity.category,
@@ -137,7 +138,6 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
           subcategory: '',
           sub_subcategory: '',
         );
-        // Убрали прямой вызов репозитория, оставили только событие
         _appDataBloc.add(
           AddHumanPhotoEvent(
             photoBase64: 'data:image/png;base64,${photoEntity.image}',
@@ -149,5 +149,17 @@ class PhotoUploadBloc extends Bloc<PhotoUploadEvent, PhotoUploadState> {
     } catch (e) {
       emit(PhotoUploadFailureState('Ошибка при загрузке фото: $e'));
     }
+  }
+
+  Future<void> _onResetPhotoUpload(
+    ResetPhotoUploadEvent event,
+    Emitter<PhotoUploadState> emit,
+  ) async {
+    _selectedImage = null;
+    _category = null;
+    _subcategory = null;
+    _subSubcategory = null;
+    _isClothesUpload = false;
+    emit(PhotoUploadInitialState());
   }
 }

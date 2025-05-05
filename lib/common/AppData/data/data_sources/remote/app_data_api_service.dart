@@ -1,5 +1,5 @@
 import 'package:retrofit/retrofit.dart';
-import 'package:zilant_look/common/data/models/photo_model.dart';
+import 'package:zilant_look/common/AppData/data/models/photo_model.dart';
 import 'package:dio/dio.dart';
 
 part 'app_data_api_service.g.dart';
@@ -11,8 +11,11 @@ abstract class AppDataApiService {
   @GET("/human_photos")
   Future<List<String>> getHumanPhotos();
 
-  @GET("/clothing_items")
-  Future<List<PhotoModel>> getClothingItems();
+  @GET("/catalog_items")
+  Future<List<PhotoModel>> getCatalogItems();
+
+  @GET("/wardrobe_items")
+  Future<List<PhotoModel>> getWardrobeItems();
 
   @POST("/upload_human_photo")
   Future<void> addHumanPhoto(
@@ -31,4 +34,7 @@ abstract class AppDataApiService {
 
   @POST("/clear_data")
   Future<void> clearData();
+
+  @DELETE("/delete_photo")
+  Future<void> deletePhoto(@Query("id") String id, @Query("type") String type);
 }

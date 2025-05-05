@@ -26,7 +26,5 @@ abstract class WardrobeRepository {
 
   Future<void> deleteClothingItem(String id);
 
-  Future<void> updateClothingItem(ClothingItemEntity item);
-
   Future<void> addWardrobeItem(ClothingItemEntity item);
 }

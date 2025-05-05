@@ -21,6 +21,7 @@ class PhotoEntity extends Equatable {
     String? category,
     String? subcategory,
     String? sub_subcategory,
+    bool? isWardrobe,
   }) {
     return PhotoEntity(
       user_name: user_name ?? this.user_name,

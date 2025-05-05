@@ -46,3 +46,5 @@ class SavePhotoEvent extends PhotoUploadEvent {
   @override
   List<Object?> get props => [context];
 }
+
+class ResetPhotoUploadEvent extends PhotoUploadEvent {}

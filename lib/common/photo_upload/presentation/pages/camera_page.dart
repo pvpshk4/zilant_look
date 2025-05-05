@@ -1,41 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
+import 'package:zilant_look/common/photo_upload/presentation/pages/clothes_category_selection_page.dart';
+import 'package:zilant_look/common/photo_upload/presentation/pages/human_photo_preview_page.dart';
+import '../../../../core/resources/dialog_state.dart';
 import '../bloc/photo_upload_bloc.dart';
 import '../bloc/photo_upload_event.dart';
 import '../bloc/photo_upload_state.dart';
-import 'human_photo_preview_page.dart';
 
-class CameraPage extends StatelessWidget {
+class CameraPage extends StatefulWidget {
   final bool isClothesUpload;
 
   const CameraPage({super.key, required this.isClothesUpload});
 
   @override
+  State<CameraPage> createState() => _CameraPageState();
+}
+
+class _CameraPageState extends State<CameraPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      DialogState.setActiveDialog(ActiveDialog.camera);
+      context.read<PhotoUploadBloc>().add(ResetPhotoUploadEvent());
+      context.read<PhotoUploadBloc>().add(
+        SetUploadTypeEvent(widget.isClothesUpload),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    context.read<PhotoUploadBloc>().add(SetUploadTypeEvent(isClothesUpload));
-    return BlocListener<PhotoUploadBloc, PhotoUploadState>(
-      listener: (context, state) {
-        if (state is PhotoUploadAwaitingCategoryState) {
-          context.push(
-            '/upload-clothes-photo/category-selection',
-            extra: state.imagePath,
-          );
-        } else if (state is PhotoUploadPreviewState) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => HumanPhotoPreviewPage(imagePath: state.imagePath),
-            ),
-          );
-        }
-        // Убираем обработку PhotoUploadSuccessState и PhotoUploadFailureState
-      },
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: Stack(
+    return Dialog(
+      backgroundColor: Colors.black,
+      insetPadding: EdgeInsets.zero,
+      child: BlocListener<PhotoUploadBloc, PhotoUploadState>(
+        listener: (context, state) {
+          if (state is PhotoUploadAwaitingCategoryState) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => ClothesCategorySelectionPage(
+                      imagePath: state.imagePath,
+                    ),
+              ),
+            );
+          } else if (state is PhotoUploadPreviewState) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return HumanPhotoPreviewPage(imagePath: state.imagePath);
+              },
+            );
+          } else if (state is PhotoUploadResetState) {
+            DialogState.setActiveDialog(ActiveDialog.none);
+            Navigator.of(context).pop();
+          }
+        },
+        child: Stack(
           children: [
-            // Чёрный фон для камеры (заглушка)
             Positioned.fill(
               child: GestureDetector(
                 onTap:
@@ -45,12 +71,13 @@ class CameraPage extends StatelessWidget {
                 child: Container(color: Colors.black),
               ),
             ),
-            // Кнопка "Назад" в левом верхнем углу
             Positioned(
               top: 40,
               left: 16,
               child: GestureDetector(
-                onTap: () => context.pop(),
+                onTap: () {
+                  context.read<PhotoUploadBloc>().add(CancelPhotoUploadEvent());
+                },
                 child: SvgPicture.asset(
                   'assets/icons/arrow_back_circled.svg',
                   width: 32,
@@ -62,7 +89,6 @@ class CameraPage extends StatelessWidget {
                 ),
               ),
             ),
-            // Кнопка для съёмки в центре снизу
             Positioned(
               bottom: 60,
               left: 0,
@@ -85,7 +111,6 @@ class CameraPage extends StatelessWidget {
                 ),
               ),
             ),
-            // Кнопка для выбора из галереи в правом нижнем углу
             Positioned(
               bottom: 60,
               right: 40,

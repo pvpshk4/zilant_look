@@ -7,6 +7,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
   final Function(int) onTap;
   final Color backgroundColor;
   final Color activeTextColor;
+  final bool showCentralButton;
+  final VoidCallback onCentralButtonTap;
 
   const CustomBottomNavigationBar({
     super.key,
@@ -14,22 +16,48 @@ class CustomBottomNavigationBar extends StatelessWidget {
     required this.onTap,
     this.backgroundColor = Colors.white,
     this.activeTextColor = AppColors.primaryColor,
+    required this.showCentralButton,
+    required this.onCentralButtonTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      color: backgroundColor,
-      height: 73,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem('home_icon.svg', 'Главная', 0, size: 24),
-          _buildNavItem('catalog_icon.svg', 'Каталог', 1, size: 20),
-          const SizedBox(width: 15),
-          _buildNavItem('wardrobe_icon.svg', 'Гардероб', 2, size: 24),
-          _buildNavItem('profile_icon.svg', 'Профиль', 3),
-        ],
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Container(
+        color: backgroundColor,
+        height: 73,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem('home_icon.svg', 'Главная', 0, size: 24),
+            _buildNavItem('catalog_icon.svg', 'Каталог', 1, size: 20),
+            showCentralButton
+                ? Transform.translate(
+                  offset: const Offset(0, -3),
+                  child: GestureDetector(
+                    onTap: onCentralButtonTap,
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                )
+                : const SizedBox(width: 60),
+            _buildNavItem('wardrobe_icon.svg', 'Гардероб', 2, size: 24),
+            _buildNavItem('profile_icon.svg', 'Профиль', 3),
+          ],
+        ),
       ),
     );
   }
